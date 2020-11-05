@@ -1,8 +1,8 @@
 ---
-title: "Xaringan"
-subtitle: "A theme for the University of Sydney"
-author: "Garth Tarr"
-date: "5 November 2018"
+title: "An Abalone-Age Investigation"
+subtitle: "Group Project 1"
+author: "M09B Early 5"
+date: "5 November 20"
 output:
   xaringan::moon_reader:
     css: ["default", "assets/sydney-fonts.css", "assets/sydney.css"]
@@ -34,7 +34,7 @@ output:
 
 ```{r}
 # Install this one if you cant install the one above
-# devtools::install_github("ropensci/RefManageR")
+devtools::install_github("ropensci/RefManageR")
 ```
 
 
