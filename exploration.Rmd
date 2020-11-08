@@ -1,0 +1,181 @@
+# Initial Data Exploration
+
+```{r}
+library(tidyverse)
+library(reshape2)
+library(gridExtra)
+library(GGally)
+library(qtlcharts)
+library(ggfortify)
+```
+
+# Names found in `abalone.names` information file.
+```{r}
+cols = c("sex",	
+             "length",
+             "diam",
+             "height",
+             "weight_whole",
+             "weight_shucked",
+             "weight_viscera",
+             "weight_shell",
+             "rings")
+```
+
+# Read the data from `abalone.data` file.
+```{r}
+data_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data"
+raw_data = readr::read_csv(data_url, cols)
+raw_data = readr::read_csv("Data/abalone.data", cols)
+```
+# Correct the automatic variable typing
+```{r}
+data = raw_data %>% mutate(sex = factor(sex, c("M", "F", "I")),
+                       rings = as.integer(rings))
+data
+```
+
+# Coerce into a long format where each entry contains only one weight measurement
+# This allows a density plot comparing each weight measurement.
+
+```{r}
+long = gather(data, "weight_type", "grams", 5:8)
+long
+```
+#regress rings on the variable length
+```{r}
+#lm1 = lm(rings ~ length,data = data)
+
+#data = data %>% mutate(resid = lm1$residuals,fitted = lm1$fitted.values)
+
+#ggplot(data, aes(x = data$length, y = data$rings)) + geom_point() + theme_classic(base_size = 26) +   labs(x = "length", y = "rings") + geom_smooth(method = "lm", se = FALSE)
+
+#p2 = ggplot(data,aes(x = length, y = resid)) + geom_point(size = 1) + theme_classic(base_size = 30) + labs(x = "length",y = "Residual") + geom_hline(yintercept = 0) 
+#p2 + geom_smooth(method = "loess", se = FALSE)
+
+
+#Non-linear -> do transiformations
+p1 = ggplot(data,aes(x = length,y = rings)) + geom_point(size = 0.5) + scale_y_log10() +   theme_classic(base_size = 20) +labs(x = "length",y = "rings") + geom_smooth(method = "lm", se = FALSE)
+p1
+
+data = data %>% mutate(lrings = log(rings))
+lm2 = lm(lrings ~ length, data = data)
+lm2
+data = data %>% mutate(lfitted = lm2$fitted.values,lresid = lm2$residuals)
+p1 = ggplot(data, aes(x = length,y = lrings)) + geom_point(size = 0.5) + theme_classic(base_size = 20) +   labs(x = "length",y = "Log rings") + geom_smooth(method = "lm", se = FALSE)
+p1
+
+p2 = ggplot(data, aes(x = length,y = lresid)) + geom_point(size = 0.5) + theme_classic(base_size = 20) + labs(x = "length", y = "Residual") +   geom_hline(yintercept = 0)
+p2
+
+#Assumption 4:normality
+data %>% ggplot() +   aes(sample = lresid) +   geom_qq(size = 2) + geom_qq_line()
+
+autoplot(lm2, which = 1:2)
+```
+#regress rings on the variable diam
+```{r}
+p1 = ggplot(data,aes(x = diam,y = rings)) + geom_point(size = 0.5) + scale_y_log10() +   theme_classic(base_size = 20) +labs(x = "diam",y = "rings") + geom_smooth(method = "lm", se = FALSE)
+p1
+
+data = data %>% mutate(lrings = log(rings))
+lm2 = lm(lrings ~ diam, data = data)
+lm2
+data = data %>% mutate(lfitted = lm2$fitted.values,lresid = lm2$residuals)
+p1 = ggplot(data, aes(x = diam,y = lrings)) + geom_point(size = 0.5) + theme_classic(base_size = 20) +   labs(x = "diam",y = "Log rings") + geom_smooth(method = "lm", se = FALSE)
+p1
+
+p2 = ggplot(data, aes(x = diam,y = lresid)) + geom_point(size = 0.5) + theme_classic(base_size = 20) + labs(x = "diam", y = "Residual") +   geom_hline(yintercept = 0)
+p2
+
+#Assumption 4:normality
+data %>% ggplot() +   aes(sample = lresid) +   geom_qq(size = 2) + geom_qq_line()
+
+autoplot(lm2, which = 1:2)
+```
+
+#regress rings on the variable height
+```{r}
+p1 = ggplot(data,aes(x = height,y = rings)) + geom_point(size = 0.5) + scale_y_log10() +   theme_classic(base_size = 20) +labs(x = "height",y = "rings") + geom_smooth(method = "lm", se = FALSE)
+p1
+
+data = data %>% mutate(lrings = log(rings))
+lm2 = lm(lrings ~ height, data = data)
+lm2
+data = data %>% mutate(lfitted = lm2$fitted.values,lresid = lm2$residuals)
+p1 = ggplot(data, aes(x = height,y = lrings)) + geom_point(size = 0.5) + theme_classic(base_size = 20) +   labs(x = "height",y = "Log rings") + geom_smooth(method = "lm", se = FALSE)
+p1
+
+p2 = ggplot(data, aes(x = height,y = lresid)) + geom_point(size = 0.5) + theme_classic(base_size = 20) + labs(x = "height", y = "Residual") +   geom_hline(yintercept = 0)
+p2
+
+#Assumption 4:normality
+data %>% ggplot() +   aes(sample = lresid) +   geom_qq(size = 2) + geom_qq_line()
+
+autoplot(lm2, which = 1:2)
+```
+
+#regress rings on the variable weight_whole
+
+```{r}
+p1 = ggplot(data,aes(x = weight_whole,y = rings)) + geom_point(size = 0.5) + scale_y_log10() +   theme_classic(base_size = 20) +labs(x = "weight_whole",y = "rings") + geom_smooth(method = "lm", se = FALSE)
+p1
+
+data = data %>% mutate(lrings = log(rings))
+lm2 = lm(lrings ~ weight_whole, data = data)
+lm2
+data = data %>% mutate(lfitted = lm2$fitted.values,lresid = lm2$residuals)
+p1 = ggplot(data, aes(x = weight_whole,y = lrings)) + geom_point(size = 0.5) + theme_classic(base_size = 20) +   labs(x = "weight_whole",y = "Log rings") + geom_smooth(method = "lm", se = FALSE)
+p1
+
+p2 = ggplot(data, aes(x = weight_whole,y = lresid)) + geom_point(size = 0.5) + theme_classic(base_size = 20) + labs(x = "weight_whole", y = "Residual") +   geom_hline(yintercept = 0)
+p2
+
+#Assumption 4:normality
+data %>% ggplot() +   aes(sample = lresid) +   geom_qq(size = 2) + geom_qq_line()
+
+autoplot(lm2, which = 1:2)
+```
+
+
+```{r}
+lm3 = lm(rings ~ length + diam + height+ weight_whole,data)
+summary(lm3)$coefficients %>% round(4)
+```
+
+```{r,message='hide'}
+GGally::ggpairs(data) + theme_bw(base_size = 1)
+```
+
+```{r}
+#qtlcharts::iplotCorr(data)
+```
+
+# Density plots of different weight measurements, split by sex/maturity
+```{r}
+ggplot(long, aes(x=grams, fill=weight_type)) + geom_density(alpha=.5) +
+    facet_wrap(nrow=3, ~sex)
+```
+# Create dataframes pertaining only to adult/infantile abalone
+```{r}
+adult = filter(data, sex != "I")
+infant = filter(data, sex == "I")
+```
+
+# Plot diameter vs height for adults and infants
+```{r}
+p1 = ggplot(infant, aes(x=diam, y=height)) + geom_point() + labs(title="INFANTS") + ylim(0,0.4)
+p2 = ggplot(adult, aes(x=diam, y=height)) + geom_point() + labs(title="MATURE") + ylim(0,0.4)
+grid.arrange(p1, p2, nrow = 1)
+```
+
+# Test if the mean weight is different across male and female abalone.
+```{r}
+mWeight = filter(data, sex=="M")$weight_whole
+fWeight = filter(data, sex=="F")$weight_whole
+
+ggplot(adult, aes(y=weight_whole)) + geom_boxplot() + facet_wrap(~sex)
+
+(t = t.test(mWeight, fWeight, var.equal=TRUE))
+t$p.val
+```
