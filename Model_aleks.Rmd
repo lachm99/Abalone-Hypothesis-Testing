@@ -1,0 +1,245 @@
+---
+title: "Model_Abalone"
+author: 'SID: 470408957'
+date: "04/11/2020"
+output: html_document
+---
+
+
+```{r,echo=TRUE}
+library(tidyverse)
+library(reshape2)
+library(gridExtra)
+library(ggfortify)
+library(GGally)
+library(qtlcharts)
+library(sjPlot)
+library(caret) 
+
+```
+
+```{r}
+
+# Names found in `abalone.names` information file.
+cols = c("sex",	
+             "length",
+             "diam",
+             "height",
+             "weight_whole",
+             "weight_shucked",
+             "weight_viscera",
+             "weight_shell",
+             "rings")
+
+# Read the data from `abalone.data` file.
+ data_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data"
+ raw_data = readr::read_csv(data_url, cols)
+ raw_data = readr::read_csv("Data/abalone.data", cols)
+ glimpse(raw_data)
+ raw_data %>%drop_na()
+male_terms <- c("M","male","man","Man","m")
+female_terms <- c("F","female","woman","Woman","f")
+x <- raw_data %>%
+    mutate(sex = if_else(sex %in% male_terms,0,
+                          if_else(sex %in% female_terms,1,2)))
+
+```
+
+Ok so for the purpose of this report we will need to predict the ages for an Abalone.
+
+For reference discuss what an Abalone is and why would it be important to figure out the age for an Abalone. Find a scholary article or something that could determine whther they dangered or something and justifies to know the age and help reproduce the species and what not.
+
+To figure out the age of the Abalone it is determined by cutting the shell through the cone, staining it, and counting the number of rings through a microscope. However, this proccess is potentially dangeorus and very time consuming, thus these independant variables shown are all a lot easier to do and easier to gather the data. Thus if a robust model is utilised then it would be ideal. 
+
+So questions to be posted are mainly what vairbales do we think will be most significant. Clearly sex will help provide a relative figure for the height weight and so on allowing to split up the data nicely. 
+
+After having a look at the distrubtuion seemed to be of a power law distburtuon hence a log log plot for the weights would work.
+
+Assumption Checking:
+
+```{r}
+x = x %>% mutate(x, weight_shell = log(weight_shell))
+x  = x %>% mutate(x, weight_shucked = log(weight_shucked))
+x  = x %>% mutate(x, weight_viscera = log(weight_viscera))
+x  = x %>% mutate(x, weight_whole = log(weight_whole))
+x = x %>% mutate(x, rings = log(rings))
+y = x
+y[,1] = raw_data[,1]
+y
+```
+
+
+Independence/Linearity: 
+
+```{r}
+ qtlcharts::iplotCorr(x)
+```
+
+```{r}
+lm3 = lm(rings ~  height + length + weight_shell+weight_shucked , y)
+summary(lm3)$coefficients %>% round(4)
+summary(lm3)$adj.r.squared
+```
+
+Linearity: 
+
+```{r}
+p1 = ggplot(x, aes(x = length ,y = rings)) + geom_point(size = 3) + theme_classic(base_size = 12) + labs(x = "length",y = "Log ozone concentration") + geom_smooth(method = "lm", se = FALSE)
+p3 = ggplot(x, aes(x = weight_shell ,y = rings)) + geom_point(size = 3) + theme_classic(base_size = 12) + labs(x = "log weight shell (°F)",y = "Log ozone concentration") + geom_smooth(method = "lm", se = FALSE)
+p4 = ggplot(x, aes(x = weight_shucked ,y = rings)) + geom_point(size = 3) + theme_classic(base_size = 12) + labs(x = "log weight shucked (°F)",y = "Log ozone concentration") + geom_smooth(method = "lm", se = FALSE)
+par(mfrow=c(2,3))
+p1
+p3
+p4
+```
+
+Homosketdacoity:
+
+```{r}
+x = x %>% mutate(lfitted = lm3$fitted.values, lresid = lm3$residuals )
+ggplot(x, aes(x = length ,y = lresid)) + geom_point(size = 3)
+ggplot(x, aes(x = weight_shell ,y = lresid)) + geom_point(size = 3)
+ggplot(x, aes(x = weight_shucked ,y = lresid)) + geom_point(size = 3)
+```
+
+Normality: 
+
+```{r}
+x %>% ggplot() + aes(sample = lresid) + geom_qq(size = 2) + geom_qq_line()
+```
+
+The assumptions are somewhat satisfied. 
+
+
+```{r}
+autoplot(lm3,which= c(1,2))
+```
+
+Central Limit theorem will be appropiate to use. 
+
+Inference/Result: 
+
+
+
+
+
+
+
+```{r}
+M1 = lm(rings ~ ., data = y)
+summary(M1)
+```
+
+```{r}
+step.back.aic = step(M1,direction = "backward",trace = FALSE) 
+round(summary(step.back.aic)$coef,3)
+summary(step.back.aic)$adj.r.squared
+```
+
+
+
+```{r}
+drop1(step.back.aic, test = "F")
+```
+
+```{r}
+M0 = lm(rings ~ 1, data = y)
+```
+
+
+```{r}
+tep.fwd.aic = step(M0, scope = list(lower = M0, upper = M1), direction = "forward", trace = FALSE)
+summary(step.fwd.aic)
+```
+
+
+```{r}
+add1(step.fwd.aic, test = "F", scope = M1)
+```
+
+
+```{r}
+sjPlot::tab_model(tep.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Forward model","Backward model"))
+```
+
+
+
+```{r}
+autoplot(tep.fwd.aic,which= c(1,2))
+
+```
+
+
+
+```{r}
+autoplot(step.back.aic,which= c(1,2))
+
+```
+
+Since there are 4177 observations - we can use central limit theorem all gucci.
+
+Seems to be somewhat linear, much better then without the prior transformations.
+
+Independence observation is way off, can relate to the factors and varibales as clearly weight whole is dependant upon the other weight measures so weight whole adds nothing much to it. 
+
+
+model is: 
+
+log(rings) = length + height + log(weight shell) + log(weight shucked) + log(weight whole) + log(weight viscera)
+
+Inference: 
+
+```{r}
+cv_full = train(rings ~ weight_shell + weight_shucked + diam + weight_whole + 
+    sex + weight_viscera + height, y, method = "lm",trControl = trainControl(method = "cv", number = 10,verboseIter = FALSE ))
+cv_full
+```
+
+
+confidence interval:
+
+
+
+
+
+
+Slide 1 and 2: 
+
+Data Description: 
+
+This biological study looks at abalones which are a common type of sea snail, where the majority of abalone species are found in cold waters, such as off the coasts of New Zealand, South Africa, Australia, Western North America, and Japan. The data set is provided by the University of California Irvine Machine Learning Repository which explores variables describing physical characteristics for abalones. The original data was collected by Marine Resources Division in Taroona, Tasmania, containing 4177 observations with 9 different variables which has no missing values. 
+
+The nine variables are:  
+● Length: Longest shell measurement (mm)
+● Diameter: the Diameter of the shell (mm)
+● Height: Height with meat in shell (mm)
+● Whole weight: Weight of whole abalone (grams)
+● Shucked weight: Weight of meat (grams)
+● Viscera weight: Gut weight after bleeding (grams)
+● Shell weight: Weight after being dried (grams)
+● Rings: no of rings in the shell (+1.5 = the age in years)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
