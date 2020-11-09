@@ -1,0 +1,133 @@
+---
+title: "Lachie_Model"
+author: "M09B_early_5"
+date: "05/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(qtlcharts)
+library(corrplot)
+library(GGally)
+library(ggfortify)
+library(caret)
+
+```
+
+## Abalone Model
+
+
+```{r}
+cols = c("sex",	
+             "length",
+             "diam",
+             "height",
+             "weight_whole",
+             "weight_shucked",
+             "weight_viscera",
+             "weight_shell",
+             "rings")
+
+raw_data = readr::read_csv("Data/abalone.data", cols)
+
+data = raw_data %>% mutate(sex = factor(sex, c("M", "F", "I")),
+                       rings = as.integer(rings))
+                  
+
+
+lo_data = select(data, rings) %>% mutate(lo_rings = log(rings)) %>% select(lo_rings)
+
+
+transformed = data %>% mutate(log_whole = log(weight_whole),
+                log_shucked = log(weight_shucked),
+                log_viscera = log(weight_viscera),
+                log_shell = log(weight_shell),
+                log_diam = log(diam),
+                log_length = log(length),
+                sqrt_height = sqrt(height),
+                sqrt_log_rings = sqrt(log(rings))) %>% 
+    
+    select(log_whole,
+           log_shucked,
+           log_viscera,
+           log_shell,
+           log_diam,
+           log_length,
+           sqrt_height,
+           sqrt_log_rings)
+qtlcharts::iplotCorr(transformed)
+
+```
+
+
+
+# Generate Model
+
+``` {r}
+M1 = lm(sqrt_log_rings ~ ., transformed)
+drop1(M1, test = "F")
+
+step.back.aic = step(M1, direction = "backward", trace = FALSE)
+summary(step.back.aic)
+
+M2 = lm(sqrt_log_rings ~ 1, transformed)
+step.fwd.aic = step(M2, scope=list(lower=M2, upper=M1),
+                    direction = "forward",
+                    trace = FALSE)
+summary(step.fwd.aic)
+```
+The exact same model is generated, so we can use either one.
+``` {r, message=FALSE}
+p1 = GGally::ggpairs(transformed) + theme_minimal(base_size = 10)
+p1
+```
+Check residuals
+
+
+```{r}
+MRed = lm(sqrt_log_rings ~ ., transformed)
+autoplot(MRed, which=1:2)
+
+
+```
+Cross validation
+```{r}
+
+set.seed(1)
+fold_id= c(1:7, rep(1:10, each=417))
+tr_red$fold_id = sample(fold_id, replace = FALSE)
+head(tr_red)
+
+
+k = 10
+full_mse = vector(mode="numeric", length=k)
+full_mae = vector(mode="numeric", length=k)
+
+for (i in 1:k) {
+    test_set = tr_red[fold_id == i,]
+    training_set = tr_red[fold_id != i,]
+    full_lm = lm(sqrt_log_rings ~ ., data=training_set)
+    full_pred = predict(full_lm, test_set)
+    full_mse[i] = mean((test_set$sqrt_log_rings - full_pred)^2)
+    full_mae[i] = mean(abs(test_set$sqrt_log_rings - full_pred))
+}
+
+# cv_res = tibble(full_mse, full_mae)
+# cv_res
+
+
+#cv_full = train(
+#    sqrt_log_rings ~ .,
+#     tr_red,
+#     trtControl = trainControl(
+#         method = "cv", number = 10,
+#         verboseIter = FALSE
+#     )
+# )
+# 
+# cv_full
+```
+
