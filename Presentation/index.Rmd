@@ -168,7 +168,7 @@ qtlcharts::iplotCorr(transformed)
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = data, mapping = mapping) +
     geom_point() +
-    geom_smooth(method=lm, fill = "blue", color="blue", se = FALSE)  +
+    geom_smooth(method=lm, fill = "green", color="green", se = FALSE)  +
     geom_smooth(method=loess, fill = "red", color="red", se = FALSE)
   p
 }
@@ -181,7 +181,7 @@ GGally::ggpairs(data, columns = 1:9, lower = list(continuous = fn_data)) + theme
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = transformed, mapping = mapping) +
     geom_point() +
-    geom_smooth(method=lm, fill = "blue", color="blue", se = FALSE) +
+    geom_smooth(method=lm, fill = "green", color="green", se = FALSE) +
     geom_smooth(method=loess, fill = "red", color="red", se = FALSE)
   p
 }
