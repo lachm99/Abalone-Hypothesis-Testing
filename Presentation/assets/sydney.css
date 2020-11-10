@@ -15,7 +15,7 @@ To specify the margin of the first title h1
   margin-bottom: 10px;
 }
 .remark-slide-content > h2:first-of-type {
-  color: #e64626;
+  color: #ff5657;
   margin-top: 5px;
   margin-bottom: 10px;
 }
@@ -93,7 +93,7 @@ To specify the margin of the first title h1
 .segue-red {
   text-align:center;
   vertical-align: middle;
-  background-color: #e64626;
+  background-color: #ff5657;
   color: #ffffff;
   text-shadow: 0 0 20px #333;
 }
@@ -356,13 +356,12 @@ slides > slide {
 */
  
 .title-slide {
-  background-image: url(USydLogo-black.svg);
   /* background-image: url(https://sydney.edu.au/etc/designs/corporate-commons/bower_components/corporate-frontend/dist/assets/img/USydLogo.svg); */
   background-position: 10% 90%;
   background-size: 160px;
-  background-color: #e64626;
+  background-color: #ff5657;
   text-align:left;
-  vertical-align: top;
+  vertical-align: middle;
   text-shadow: none;
   /*text-shadow: 0 0 5px #333;*/
   /*padding-left: 100px;   delete this for 4:3 aspect ratio */
@@ -372,10 +371,10 @@ slides > slide {
 .title-slide h1 {
   color: #ffffff;
   font-weight: normal;
-  font-size: 45px;
+  font-size: 52px;
   padding: 20px;
   text-align: left;
-  vertical-align: middle;
+  vertical-align: ;
   margin-bottom: 18px;
 }
 
@@ -468,7 +467,7 @@ Masterbrand charcoal #424242;
 C=0 M=0 Y=0 K=90 
 R=66 G=66 B=66 
 
-Masterbrand red #e64626;
+Masterbrand red #ff5657;
 C=0 M=0 Y=0 K=90
 R=66 G=66 B=66 
 

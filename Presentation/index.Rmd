@@ -2,12 +2,12 @@
 title: "An Abalone-Age Investigation"
 subtitle: "Group Project 1"
 author: "M09B Early 5"
-date: "5 November 20"
+date: "November 20"
 output:
   xaringan::moon_reader:
     css: ["default", "assets/sydney-fonts.css", "assets/sydney.css"]
     self_contained: false # if true, fonts will be stored locally
-    seal: true # show a title slide with YAML information
+    seal: false # show a title slide with YAML information
     includes:
       in_header: "assets/mathjax-equation-numbers.html"
     nature:
@@ -19,24 +19,160 @@ output:
       navigation:
         scroll: false # disable slide transitions by scrolling
 ---
+class: title-slide
 
-```{r}
-#All the stuff you would need installed
-# install.packages("devtools")
-# devtools::install_github('yihui/xaringan')
-# devtools::install_github("ropenscilabs/icon")
-# install.packages("RefManageR")
-# install.packages("DT")
-# install.packages("tidyverse")
-# install.packages("googleVis")
-# install.packages("bibtex")
+# Abalone Age
+
+## Group Project
+
+### M09B Early 5
+
+### November 2020
+
+
+---
+exclude: true
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE)
+
+library(tidyverse)
+library(qtlcharts)
+library(corrplot)
+library(GGally)
+library(ggfortify)
+library(caret)
+
+cols = c("sex",	
+             "length",
+             "diam",
+             "height",
+             "weight_whole",
+             "weight_shucked",
+             "weight_viscera",
+             "weight_shell",
+             "rings")
+
+raw_data = readr::read_csv("../Data/abalone.data", cols)
+
+data = raw_data %>% mutate(sex = factor(sex, c("M", "F", "I")),
+                       rings = as.integer(rings)) %>%
+  filter(height < 0.5)
+
+
 ```
 
-```{r}
-# Install this one if you cant install the one above
-devtools::install_github("ropensci/RefManageR")
+---
+## Data Description - Abalone
+- Dataset concerning .brand-red[marine snails], via Marine Research Laboratories, Taroona.
+
+
+```{r, echo=FALSE}
+desc_table = data.frame(colnames = c("Variable Name",
+                                     "Variable Type",
+                                     "Description"))
+
+variable_names = c("Sex",
+                   "Length",
+                   "Diameter",
+                   "Height",
+                   "Whole Weight",
+                   "Shucked Weight",
+                   "Viscera Weight",
+                   "Shell Weight",
+                   "Rings")
+variable_types = c("Factor",
+                   "Continuous",
+                   "Continuous",
+                   "Continuous",
+                   "Continuous",
+                   "Continuous",
+                   "Continuous",
+                   "Continuous",
+                   "Integer")
+variable_descs = c("Adult, Female, or Infant (Unidentified)",
+                   "Longest shell measurement",
+                   "Perpendicular to length",
+                   "With meat in shell",
+                   "Grams	whole abalone",
+                   "Grams	weight of meat",
+                   "Grams	gut weight (after bleeding)",
+                   "Grams	after being dried",
+                   "Number of Rings. +1.5 gives age in years")
+
+desc_table = data.frame(variable_names, variable_types, variable_descs)
+
+colnames(desc_table) = c("Variable Name",
+                         "Variable Type",
+                         "Description")
+knitr::kable(desc_table)
+
+```
+- Construct a model to predict .brand-red[abalone age] without exhaustive ring counting.
+
+
+---
+## Initial Inspection and Transformations
+```{r, echo=FALSE}
+res = model.matrix(~sex, data)
+
+numericised_sex = select(data, -sex)
+numericised_sex$sex_f = res[,2]
+numericised_sex$sex_i = res[,3]
+
+transformed = numericised_sex %>% mutate(log_whole = log(weight_whole),
+                log_shucked = log(weight_shucked),
+                log_viscera = log(weight_viscera),
+                log_shell = log(weight_shell),
+                log_diam = log(diam),
+                log_length = log(length),
+                sqrt_height = sqrt(height),
+                sqrt_log_rings = sqrt(log(rings))) %>% 
+              select(log_whole,
+                log_shucked,
+                log_viscera,
+                log_shell,
+                log_diam,
+                log_length,
+                sqrt_height,
+                sex_f,
+                sex_i,
+                sqrt_log_rings)
+
 ```
 
+.pull-left[
+### Initial
+```{r}
+qtlcharts::iplotCorr(select(data,-sex))
+```
+
+.small[.brand-blue[Excluding `Sex` factor.]]
+]
+
+.pull-right[
+### Transformed
+```{r}
+qtlcharts::iplotCorr(transformed)
+```
+
+.small[.brand-blue[Including `Sex`; utilising dummy-coding to construct a contrast matrix.]]
+]
+---
+
+.pull-left[## Initial, excluding `sex`.
+```{r}
+GGally::ggpairs(data)
+
+```
+]
+
+.pull-right[## Transformed, including `sex`.
+```{r}
+GGally::ggpairs(transformed)
+
+```
+]
+---
 
 ```{r, load_refs, echo=FALSE, cache=FALSE}
 library(bibtex)
