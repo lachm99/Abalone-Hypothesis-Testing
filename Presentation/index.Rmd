@@ -34,7 +34,11 @@ class: title-slide
 exclude: true
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, message=FALSE)
-
+# install.packages("qtlcharts")
+# install.packages("corrplot")
+# install.packages("GGally")
+# install.packages("ggfortify")
+# install.packages("caret")
 library(tidyverse)
 library(qtlcharts)
 library(corrplot)
@@ -161,16 +165,29 @@ qtlcharts::iplotCorr(transformed)
 
 .pull-left[## Initial, excluding `sex`.
 ```{r}
-GGally::ggpairs(data)
-
+fn_data = function(data, mapping, ...) {
+  p = ggplot(data = data, mapping = mapping) +
+    geom_point() +
+    geom_smooth(method=lm, fill = "blue", color="blue", se = FALSE)  +
+    geom_smooth(method=loess, fill = "red", color="red", se = FALSE)
+  p
+}
+GGally::ggpairs(data, columns = 1:9, lower = list(continuous = fn_data)) + theme_bw(base_size = 10)
 ```
 ]
 
 .pull-right[## Transformed, including `sex`.
-```{r}
-GGally::ggpairs(transformed)
-
+```{r, warning = FALSE}
+fn_data = function(data, mapping, ...) {
+  p = ggplot(data = transformed, mapping = mapping) +
+    geom_point() +
+    geom_smooth(method=lm, fill = "blue", color="blue", se = FALSE) +
+    geom_smooth(method=loess, fill = "red", color="red", se = FALSE)
+  p
+}
+GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data)) + theme_bw(base_size = 10)
 ```
+
 ]
 ---
 
