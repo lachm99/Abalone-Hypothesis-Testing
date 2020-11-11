@@ -1,0 +1,248 @@
+---
+title: "Abalone Age Investigation"
+
+output:
+  html_document:
+    fig_caption: yes
+    number_sections: yes
+    self_contained: yes
+    theme: journal
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gridExtra)
+library(tidyverse)
+```
+
+https://www.forbes.com/sites/ariellasimke/2019/12/03/3200-white-abalone-released-in-an-effort-to-beat-extinction/?sh=2feaa8fb5910
+http://homepages.cae.wisc.edu/~ece539/fall10/project/Mayukh_pro.pdf
+https://dpipwe.tas.gov.au/sea-fishing-aquaculture/recreational-fishing/abalone-fishing
+https://www.abc.net.au/news/2016-05-02/tasmania-abalone-industry-heading-for-collapse-say-divers/7374966
+https://archive.ics.uci.edu/ml/datasets/abalone
+
+# Introduction
+
+Abalones have been classified as an endangered species due to overfishing. In an effort to prevent extinction, regulations and catch rules have been placed to only allow abalones that are older than a certain threshold to be fished. The age of an abalone can be determined by counting the number of shell layers ("rings") present. However, this process is cumbersome and involves cutting a sample of the shell, staining it, and counting the number of rings through a microscope. Since we do not wish to put a stop on abalone fishing due to market demand, a more intuitive way of determining the age of abalones is necessary. Regulations that have been applied regarding abalone fishing is by limiting the amount fished and setting a minimum size of abalone that is allowed to be harvested. We would like to investigate whether we can predict the average age of a abalones from their physical measurements.
+
+# Abstract
+
+This investigation is a regression supervised learning study of the relationship between the number of abalones rings against their physical measurements. 
+
+# Introduction
+
+Abalones have been classified as an endangered species due to overfishing which leads to regulations that prohibit fishing for abalones smaller than a certain threshold of measurements. We would like to investigate whether we can predict the average number of abalones from their physical measurements.
+
+# Data set
+
+Our dataset consist of 4177 observations and 8 attributes. It is retrieved from https://archive.ics.uci.edu/ml/datasets/abalone.
+
+```{r, message = FALSE}
+# Names found in `abalone.names` information file.
+cols = c("sex",	
+             "length",
+             "diam",
+             "height",
+             "weight_whole",
+             "weight_shucked",
+             "weight_viscera",
+             "weight_shell",
+             "rings")
+
+# Read the data from `abalone.data` file.
+data_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data"
+raw_data = readr::read_csv(data_url, cols)
+raw_data
+```
+
+```{r, message = FALSE}
+abalones = raw_data %>% mutate(sex = factor(sex, c("M", "F", "I")))
+# abalones = raw_data %>%
+#   mutate(
+#     sex = case_when(
+#     sex == "F" ~ 2,
+#     sex == "M" ~ 1,
+#     sex == "I" ~ 0
+#   ))
+```
+
+# Analysis
+
+## Variable selection
+
+First we looks at plots of rings against every other variables in the dataset and see if there are any which we can fit a line through.
+
+## Investigating Significance of Gender
+
+Since we have a categorical variable, we will first check to see whether there is a significant difference between genders. 
+
+```{r, message = FALSE, warning = FALSE}
+library(dplyr)
+group_by(abalones, sex) %>%
+  summarise(
+    count = n(),
+    mean = mean(rings),
+    sd = sd(rings)
+  )
+```
+```{r, message = FALSE, warning = FALSE}
+library("ggpubr")
+ggboxplot(abalones, x = "sex", y = "rings", 
+          color = "sex", palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+          order = c("M", "F", "I"),
+          ylab = "Rings", xlab = "Gender")
+```
+
+```{r, message = FALSE, warning = FALSE}
+# Compute the analysis of variance
+res.aov <- aov(rings ~ sex, data = abalones)
+# Summary of the analysis
+summary(res.aov)
+```
+
+As the p-value is less than 0.05, we conclude that there are significant differences between genders. 
+
+```{r, message = FALSE, warning = FALSE}
+TukeyHSD(res.aov)
+```
+
+```{r}
+lm0 = lm(rings ~ ., abalones)
+summary(lm0)$coefficients %>% round(4)
+```
+
+```{r}
+step_back_aic = step(lm0, direction = "backward", trace = F)
+summary(step_back_aic)
+```
+
+We see that there is no significant difference between female and male abalones but there is a significant difference between male and infant so we will combine female with male.
+
+
+```{r}
+abalones = abalones %>%
+  mutate(
+    sex = case_when(
+    sex == "F" ~ "A",
+    sex == "M" ~ "A",
+    sex == "I" ~ "I"
+  ))
+
+lm0 = lm(rings ~ ., abalones)
+summary(lm0)$coefficients %>% round(4)
+```
+
+## Transforming weight
+
+```{r, message = FALSE}
+abalones_lweight = abalones %>% filter(height < 0.5) %>% mutate(weight_whole = log(weight_whole),
+                                weight_shucked = log(weight_shucked),
+                               weight_viscera = log(weight_viscera),
+                               weight_shell = log(weight_shell),
+                               height = sqrt(height)) 
+# abalones_lweight = abalones_lweight %>%
+#   mutate(
+#     sex = case_when(
+#     sex == "A" ~ 0,
+#     sex == "I" ~ 1
+#   ))
+
+my_fn <- function(data, mapping, ...){
+p <- ggplot(data = abalones_lweight, mapping = mapping) + 
+    geom_point() + 
+    geom_smooth(method=loess, fill="red", color="red", se = FALSE) +
+    geom_smooth(method=lm, fill="blue", color="blue", se = FALSE)
+p
+}
+GGally::ggpairs(abalones_lweight, columns = 1:9, lower = list(continuous = my_fn)) + theme_bw(base_size = 10)
+```
+
+```{r}
+cor_mat = cor(abalones_lweight)
+melted_cor_mat = cor_mat %>%
+  data.frame() %>% 
+  rownames_to_column(var = "var1") %>% 
+  gather(key = "var2", value = "cor", -var1)
+```
+
+```{r}
+qtlcharts::iplotCorr(abalones_lweight)
+```
+
+
+```{r}
+lm0 = lm(rings ~ ., abalones_lweight)
+summary(lm0)$coefficients %>% round(4)
+```
+
+## AIC
+
+```{r}
+step_back_aic = step(lm0, direction = "backward", trace = F)
+summary(step_back_aic)
+```
+
+```{r}
+step_back_aic %>%
+  broom::glance() %>% 
+  round(2) %>% t()
+```
+
+```{r}
+drop1(step_back_aic, test = "F")
+```
+
+```{r}
+library(ggfortify)
+autoplot(lm0, which = 1:2)
+```
+
+# DROP SOME WEIGHT
+
+
+```{r}
+lm0 = lm(rings ~ ., abalones_lweight)
+summary(lm0)$coefficients %>% round(4)
+```
+
+So we can see that length is not significant in this case, hence we will drop it.
+
+but when we drop length, diam has also become insignificant.
+
+```{r}
+lm0 = lm(rings ~ . - weight_shell - weight_shucked - weight_viscera, abalones_lweight)
+summary(lm0)$coefficients %>% round(4)
+```
+
+
+## AIC
+
+```{r}
+step_back_aic = step(lm0, direction = "backward", trace = F)
+summary(step_back_aic)
+```
+
+```{r}
+step_back_aic %>%
+  broom::glance() %>% 
+  round(2) %>% t()
+```
+
+```{r}
+drop1(step_back_aic, test = "F")
+```
+
+```{r}
+autoplot(lm0, which = 1:2)
+```
+
+
+# References
+
+Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
+
+

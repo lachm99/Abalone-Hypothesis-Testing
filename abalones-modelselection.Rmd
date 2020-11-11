@@ -1,0 +1,1153 @@
+---
+title: "Checking assumptions"
+
+output:
+  html_document:
+    fig_caption: yes
+    number_sections: yes
+    self_contained: yes
+    theme: journal
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gridExtra)
+library(tidyverse)
+```
+
+# Import data
+
+```{r, message = FALSE}
+# Names found in `abalone.names` information file.
+cols = c("sex",	
+             "length",
+             "diam",
+             "height",
+             "weight_whole",
+             "weight_shucked",
+             "weight_viscera",
+             "weight_shell",
+             "rings")
+
+# Read the data from `abalone.data` file.
+data_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data"
+raw_data = readr::read_csv(data_url, cols)
+```
+
+
+# Clean data
+```{r, message = FALSE}
+# Correct the automatic variable typing
+data = raw_data %>% mutate(sex = factor(sex, c("M", "F", "I")))
+```
+
+
+# Initial exploration
+
+## Fit straight line
+```{r, message = FALSE}
+p1 = ggplot(data, aes(x = length, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "length", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p2 = ggplot(data, aes(x = diam, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "diam", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p3 = ggplot(data, aes(x = height, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "height", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p4 = ggplot(data, aes(x = weight_whole, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "weight_whole", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p5 = ggplot(data, aes(x = weight_shucked, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "weight_shucked", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p6 = ggplot(data, aes(x = weight_viscera, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "weight_viscera", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p7 = ggplot(data, aes(x = weight_shell, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "weight_shell", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, nrow = 3)
+```
+
+
+## Compare values and Residuals to check for Linearity
+
+### rings vs length
+```{r, message = FALSE}
+lm1 = lm(rings ~ length, 
+         data = data)
+lm1
+data1 = data %>% 
+  mutate(
+    resid1 = lm1$residuals,
+    fitted1 = lm1$fitted.values
+  )
+
+q1 = ggplot(data1, 
+            aes(x = length, y = resid1)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "length",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red") + 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p1, q1, nrow = 1)
+```
+
+
+### rings vs diam
+```{r, message = FALSE}
+lm2 = lm(rings ~ diam, 
+         data = data)
+lm2
+data2 = data %>% 
+  mutate(
+    resid2 = lm2$residuals,
+    fitted2 = lm2$fitted.values
+  )
+
+q2 = ggplot(data2, 
+            aes(x = diam, y = resid2)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "diam",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p2, q2, nrow = 1)
+```
+
+### rings vs height
+```{r, message = FALSE}
+data = data %>% filter(height < 0.5)
+lm3 = lm(rings ~ height, 
+         data = data)
+lm3
+data3 = data %>% 
+  mutate(
+    resid3 = lm3$residuals,
+    fitted3 = lm3$fitted.values
+  )
+
+q3 = ggplot(data3, 
+            aes(x = height, y = resid3)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "height",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p3, q3, nrow = 1)
+```
+
+
+### rings vs weight_whole
+```{r, message = FALSE}
+lm4 = lm(rings ~ weight_whole, 
+         data = data)
+lm4
+data4 = data %>% 
+  mutate(
+    resid4 = lm4$residuals,
+    fitted4 = lm4$fitted.values
+  )
+
+q4 = ggplot(data4, 
+            aes(x = weight_whole, y = resid4)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "weight_whole",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p4, q4, nrow = 1)
+```
+
+
+### rings vs weight_shucked
+```{r, message = FALSE}
+lm5 = lm(rings ~ weight_shucked, 
+         data = data)
+lm5
+fitted5 = 7.737 + 6.114  * data$weight_shucked
+resid5 = data$rings - fitted5
+data5 = data %>% 
+  mutate(
+    resid5 = lm5$residuals,
+    fitted5 = lm5$fitted.values
+  )
+
+q5 = ggplot(data5, 
+            aes(x = weight_shucked, y = resid5)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "weight_shucked",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p5, q5, nrow = 1)
+```
+
+### rings vs weight_viscera
+```{r, message = FALSE}
+lm6 = lm(rings ~ weight_viscera, 
+         data = data)
+lm6
+data6 = data %>% 
+  mutate(
+    resid6 = lm6$residuals,
+    fitted6 = lm6$fitted.values
+  )
+
+q6 = ggplot(data6, 
+            aes(x = weight_viscera, y = resid6)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "weight_viscera",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p6, q6, nrow = 1)
+```
+
+### rings vs weight_shell
+```{r, message = FALSE}
+lm7 = lm(rings ~ weight_shell, 
+         data = data)
+lm7
+fitted7 = 6.462 + 14.536 * data$weight_shell
+resid7 = data$rings - fitted7
+data7 = data %>% 
+  mutate(
+    resid7 = lm7$residuals,
+    fitted7 = lm7$fitted.values
+  )
+
+q7 = ggplot(data7, 
+            aes(x = weight_shell, y = resid7)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "weight_shell",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p7, q7, nrow = 1)
+```
+
+## Check normality
+
+```{r, message = FALSE}
+library(ggfortify)
+autoplot(lm1, which = 1:2)
+```
+
+```{r, message = FALSE}
+autoplot(lm2, which = 1:2)
+```
+
+```{r, message = FALSE}
+autoplot(lm3, which = 1:2)
+```
+
+```{r}
+autoplot(lm4, which = 1:2)
+```
+
+```{r}
+autoplot(lm5, which = 1:2)
+```
+
+```{r}
+autoplot(lm6, which = 1:2)
+```
+
+```{r}
+autoplot(lm7, which = 1:2)
+```
+
+## Use GGally
+
+```{r, message = FALSE}
+# install.packages("GGally")
+library(GGally)
+my_fn <- function(data, mapping, ...){
+p <- ggplot(data = data, mapping = mapping) + 
+    geom_point() + 
+    geom_smooth(method=loess, fill="red", color="red", se = FALSE)
+
+# geom_smooth(method=lm, fill="blue", color="blue", se = FALSE)  # this plots linear line
+
+p
+}
+GGally::ggpairs(data, columns = 1:9, lower = list(continuous = my_fn)) + theme_bw(base_size = 10)
+```
+
+```{r}
+lmTotal = lm(rings ~ ., data)
+summary(lmTotal)$coefficients %>% round(4)
+lmTotal
+```
+
+```{r}
+# remotes::install_github("datalorax/equatiomatic")
+library(equatiomatic)
+```
+
+```{r}
+extract_eq(lmTotal, use_coefs = TRUE)
+```
+
+
+# Log transformation on rings (log - linear)
+
+## Fit straight line
+
+```{r, message = FALSE}
+data = data %>% 
+  mutate(lorings = log(rings))
+
+p1 = ggplot(data, aes(x = length, y = lorings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "length", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p2 = ggplot(data, aes(x = diam, y = lorings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "diam", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p3 = ggplot(data, aes(x = height, y = lorings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "height", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p4 = ggplot(data, aes(x = weight_whole, y = lorings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "weight_whole", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p5 = ggplot(data, aes(x = weight_shucked, y = lorings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "weight_shucked", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p6 = ggplot(data, aes(x = weight_viscera, y = lorings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "weight_viscera", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p7 = ggplot(data, aes(x = weight_shell, y = lorings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "weight_shell", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, nrow = 3)
+```
+
+## Compare values and Residuals to check for Linearity
+
+### rings vs length
+```{r, message = FALSE}
+lm1 = lm(lorings ~ length, 
+         data = data)
+data1 = data %>% 
+  mutate(
+    resid1 = lm1$residuals,
+    fitted1 = lm1$fitted.values
+  )
+
+q1 = ggplot(data1, 
+            aes(x = length, y = resid1)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "length",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red") + 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p1, q1, nrow = 1)
+```
+
+
+### rings vs diam
+```{r, message = FALSE}
+lm2 = lm(lorings ~ diam, 
+         data = data)
+data2 = data %>% 
+  mutate(
+    resid2 = lm2$residuals,
+    fitted2 = lm2$fitted.values
+  )
+
+q2 = ggplot(data2, 
+            aes(x = diam, y = resid2)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "diam",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p2, q2, nrow = 1)
+```
+
+### rings vs height
+```{r, message = FALSE}
+lm3 = lm(lorings ~ height, 
+         data = data)
+data3 = data %>% 
+  mutate(
+    resid3 = lm3$residuals,
+    fitted3 = lm3$fitted.values
+  )
+
+q3 = ggplot(data3, 
+            aes(x = height, y = resid3)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "height",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p3, q3, nrow = 1)
+```
+
+
+### rings vs weight_whole
+```{r, message = FALSE}
+lm4 = lm(lorings ~ weight_whole, 
+         data = data)
+data4 = data %>% 
+  mutate(
+    resid4 = lm4$residuals,
+    fitted4 = lm4$fitted.values
+  )
+
+q4 = ggplot(data4, 
+            aes(x = weight_whole, y = resid4)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "weight_whole",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p4, q4, nrow = 1)
+```
+
+
+### rings vs weight_shucked
+```{r, message = FALSE}
+lm5 = lm(lorings ~ weight_shucked, 
+         data = data)
+data5 = data %>% 
+  mutate(
+    resid5 = lm5$residuals,
+    fitted5 = lm5$fitted.values
+  )
+
+q5 = ggplot(data5, 
+            aes(x = weight_shucked, y = resid5)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "weight_shucked",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p5, q5, nrow = 1)
+```
+
+### rings vs weight_viscera
+```{r, message = FALSE}
+lm6 = lm(lorings ~ weight_viscera, 
+         data = data)
+data6 = data %>% 
+  mutate(
+    resid6 = lm6$residuals,
+    fitted6 = lm6$fitted.values
+  )
+
+q6 = ggplot(data6, 
+            aes(x = weight_viscera, y = resid6)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "weight_viscera",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p6, q6, nrow = 1)
+```
+
+### rings vs weight_shell
+```{r, message = FALSE}
+lm7 = lm(lorings ~ weight_shell, 
+         data = data)
+data7 = data %>% 
+  mutate(
+    resid7 = lm7$residuals,
+    fitted7 = lm7$fitted.values
+  )
+
+q7 = ggplot(data7, 
+            aes(x = weight_shell, y = resid7)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "weight_shell",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p7, q7, nrow = 1)
+```
+
+
+## Check normality
+
+```{r, message = FALSE}
+library(ggfortify)
+autoplot(lm1, which = 1:2)
+```
+
+```{r, message = FALSE}
+# data2 %>% ggplot() +
+#   aes(sample = resid2) +
+#   geom_qq(size = 2) + geom_qq_line()
+
+autoplot(lm2, which = 1:2)
+```
+
+```{r, message = FALSE}
+# data3 %>% ggplot() +
+#   aes(sample = resid3) +
+#   geom_qq(size = 2) + geom_qq_line()
+autoplot(lm3, which = 1:2)
+```
+
+```{r}
+# data4 %>% ggplot() +
+#   aes(sample = resid4) +
+#   geom_qq(size = 2) + geom_qq_line()
+autoplot(lm4, which = 1:2)
+```
+
+```{r}
+# data5 %>% ggplot() +
+#   aes(sample = resid5) +
+#   geom_qq(size = 2) + geom_qq_line()
+autoplot(lm5, which = 1:2)
+```
+
+```{r}
+# data6 %>% ggplot() +
+#   aes(sample = resid6) +
+#   geom_qq(size = 2) + geom_qq_line()
+autoplot(lm6, which = 1:2)
+```
+
+```{r}
+autoplot(lm7, which = 1:2)
+```
+
+```{r, message = FALSE}
+# install.packages("GGally")
+library(GGally)
+my_fn <- function(data, mapping, ...){
+p <- ggplot(data = data, mapping = mapping) + 
+    geom_point() + 
+    geom_smooth(method=loess, fill="red", color="red", se = FALSE)
+
+# geom_smooth(method=lm, fill="blue", color="blue", se = FALSE)
+
+p
+}
+GGally::ggpairs(data, columns = 1:9, lower = list(continuous = my_fn)) + theme_bw(base_size = 10)
+```
+
+```{r}
+lmTotal = lm(rings ~ ., data)
+summary(lmTotal)$coefficients %>% round(4)
+lmTotal
+```
+
+```{r}
+extract_eq(lmTotal, use_coefs = TRUE)
+```
+
+# Linear Log 
+
+## Fit straight line
+
+```{r, message = FALSE}
+data = data %>% 
+  mutate(length = log(length),
+         diam = log(diam),
+         height = log(height),
+         weight_whole = log(weight_whole),
+         weight_shucked = log(weight_shucked),
+         weight_viscera = log(weight_viscera),
+         weight_shell = log(weight_shell))
+
+data = data %>% 
+  filter(is.finite(height))
+
+p1 = ggplot(data, aes(x = length, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "llength", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p2 = ggplot(data, aes(x = diam, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "ldiam", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p3 = ggplot(data, aes(x = height, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "lheight", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p4 = ggplot(data, aes(x = weight_whole, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "lweight_whole", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p5 = ggplot(data, aes(x = weight_shucked, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "lweight_shucked", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p6 = ggplot(data, aes(x = weight_viscera, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "lweight_viscera", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p7 = ggplot(data, aes(x = weight_shell, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "lweight_shell", y = "rings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, nrow = 3)
+```
+
+## Compare values and Residuals to check for Linearity
+
+### rings vs log length
+```{r, message = FALSE}
+lm1 = lm(rings ~ length, 
+         data = data)
+lm1
+data1 = data %>% 
+  mutate(
+    resid1 = lm1$residuals,
+    fitted1 = lm1$fitted.values
+  )
+
+q1 = ggplot(data1, 
+            aes(x = length, y = resid1)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "length",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red") + 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p1, q1, nrow = 1)
+```
+
+### rings vs height
+```{r, message = FALSE}
+lm3 = lm(lorings ~ height, 
+         data = data)
+lm3
+data3 = data %>% 
+  mutate(
+    resid3 = lm3$residuals,
+    fitted3 = lm3$fitted.values
+  )
+
+q3 = ggplot(data3, 
+            aes(x = height, y = resid3)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "lheight",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p3, q3, nrow = 1)
+```
+
+
+### rings vs weight_whole
+```{r, message = FALSE}
+lm4 = lm(lorings ~ weight_whole, 
+         data = data)
+lm4
+data4 = data %>% 
+  mutate(
+    resid4 = lm4$residuals,
+    fitted4 = lm4$fitted.values
+  )
+
+q4 = ggplot(data4, 
+            aes(x = weight_whole, y = resid4)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "lweight_whole",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p4, q4, nrow = 1)
+```
+
+
+### rings vs weight_shucked
+```{r, message = FALSE}
+lm5 = lm(lorings ~ weight_shucked, 
+         data = data)
+lm5
+data5 = data %>% 
+  mutate(
+    resid5 = lm5$residuals,
+    fitted5 = lm5$fitted.values
+  )
+
+q5 = ggplot(data5, 
+            aes(x = weight_shucked, y = resid5)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "lweight_shucked",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p5, q5, nrow = 1)
+```
+
+### rings vs weight_viscera
+```{r, message = FALSE}
+lm6 = lm(lorings ~ weight_viscera, 
+         data = data)
+lm6
+data6 = data %>% 
+  mutate(
+    resid6 = lm6$residuals,
+    fitted6 = lm6$fitted.values
+  )
+
+q6 = ggplot(data6, 
+            aes(x = weight_viscera, y = resid6)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "lweight_viscera",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p6, q6, nrow = 1)
+```
+
+### rings vs weight_shell
+```{r, message = FALSE}
+lm7 = lm(lorings ~ weight_shell, 
+         data = data)
+lm7
+data7 = data %>% 
+  mutate(
+    resid7 = lm7$residuals,
+    fitted7 = lm7$fitted.values
+  )
+
+q7 = ggplot(data7, 
+            aes(x = weight_shell, y = resid7)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "lweight_shell",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p7, q7, nrow = 1)
+```
+
+
+## Check normality
+
+```{r}
+library(ggfortify)
+autoplot(lm1, which = 1:2)
+```
+
+```{r}
+autoplot(lm2, which = 1:2)
+```
+
+```{r}
+autoplot(lm3, which = 1:2)
+```
+
+```{r}
+autoplot(lm4, which = 1:2)
+```
+
+```{r}
+autoplot(lm5, which = 1:2)
+```
+
+```{r}
+autoplot(lm6, which = 1:2)
+```
+
+```{r}
+autoplot(lm7, which = 1:2)
+```
+
+## Use GGally
+
+```{r, message = FALSE}
+# install.packages("GGally")
+library(GGally)
+my_fn <- function(data, mapping, ...){
+p <- ggplot(data = data, mapping = mapping) + 
+    geom_point() + 
+    geom_smooth(method=loess, fill="red", color="red", se = FALSE)
+
+# geom_smooth(method=lm, fill="blue", color="blue", se = FALSE)
+
+p
+}
+GGally::ggpairs(data, columns = 1:9, lower = list(continuous = my_fn)) + theme_bw(base_size = 10)
+```
+
+```{r}
+lmTotal = lm(rings ~ ., data)
+summary(lmTotal)$coefficients %>% round(4)
+lmTotal
+```
+
+```{r}
+extract_eq(lmTotal, use_coefs = TRUE)
+```
+
+# Log Log 
+
+## Fit straight line
+
+```{r, message = FALSE}
+data = data %>% 
+  mutate(rings = log(rings))
+
+p1 = ggplot(data, aes(x = length, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "llength", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p2 = ggplot(data, aes(x = diam, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "ldiam", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p3 = ggplot(data, aes(x = height, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "lheight", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p4 = ggplot(data, aes(x = weight_whole, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "lweight_whole", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p5 = ggplot(data, aes(x = weight_shucked, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "lweight_shucked", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p6 = ggplot(data, aes(x = weight_viscera, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "lweight_viscera", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+p7 = ggplot(data, aes(x = weight_shell, y = rings)) +
+  geom_point() + theme_classic(base_size = 5) +
+  labs(x = "lweight_shell", y = "lorings") + 
+  geom_smooth(method = "lm", se = FALSE)
+
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, nrow = 3)
+```
+
+## Compare values and Residuals to check for Linearity
+
+### rings vs length
+```{r, message = FALSE}
+lm1 = lm(rings ~ length, 
+         data = data)
+lm1
+data1 = data %>% 
+  mutate(
+    resid1 = lm1$residuals,
+    fitted1 = lm1$fitted.values
+  )
+
+q1 = ggplot(data1, 
+            aes(x = length, y = resid1)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "length",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red") + 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p1, q1, nrow = 1)
+```
+
+
+### rings vs diam
+```{r, message = FALSE}
+lm2 = lm(rings ~ diam, 
+         data = data)
+lm2
+data2 = data %>% 
+  mutate(
+    resid2 = lm2$residuals,
+    fitted2 = lm2$fitted.values
+  )
+
+q2 = ggplot(data2, 
+            aes(x = diam, y = resid2)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "ldiam",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p2, q2, nrow = 1)
+```
+
+
+### rings vs height
+```{r, message = FALSE}
+lm3 = lm(rings ~ height, 
+         data = data)
+lm3
+data3 = data %>% 
+  mutate(
+    resid3 = lm3$residuals,
+    fitted3 = lm3$fitted.values
+  )
+
+q3 = ggplot(data3, 
+            aes(x = height, y = resid3)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "lheight",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p3, q3, nrow = 1)
+```
+
+
+### rings vs weight_whole
+```{r, message = FALSE}
+lm4 = lm(rings ~ weight_whole, 
+         data = data)
+lm4
+data4 = data %>% 
+  mutate(
+    resid4 = lm4$residuals,
+    fitted4 = lm4$fitted.values
+  )
+
+q4 = ggplot(data4, 
+            aes(x = weight_whole, y = resid4)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "lweight_whole",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p4, q4, nrow = 1)
+```
+
+
+### rings vs weight_shucked
+```{r, message = FALSE}
+lm5 = lm(rings ~ weight_shucked, 
+         data = data)
+lm5
+data5 = data %>% 
+  mutate(
+    resid5 = lm5$residuals,
+    fitted5 = lm5$fitted.values
+  )
+
+q5 = ggplot(data5, 
+            aes(x = weight_shucked, y = resid5)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "lweight_shucked",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p5, q5, nrow = 1)
+```
+
+### rings vs weight_viscera
+```{r, message = FALSE}
+lm6 = lm(rings ~ weight_viscera, 
+         data = data)
+lm6
+data6 = data %>% 
+  mutate(
+    resid6 = lm6$residuals,
+    fitted6 = lm6$fitted.values
+  )
+
+q6 = ggplot(data6, 
+            aes(x = weight_viscera, y = resid6)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "lweight_viscera",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p6, q6, nrow = 1)
+```
+
+### rings vs weight_shell
+```{r, message = FALSE}
+lm7 = lm(rings ~ weight_shell, 
+         data = data)
+lm7
+data7 = data %>% 
+  mutate(
+    resid7 = lm7$residuals,
+    fitted7 = lm7$fitted.values
+  )
+
+q7 = ggplot(data7, 
+            aes(x = weight_shell, y = resid7)) + 
+  geom_point(size = 3) + 
+  theme_classic(base_size = 5) + 
+  labs(x = "lweight_shell",
+       y = "Residual") +
+  geom_hline(yintercept = 0, col = "red")+ 
+  geom_smooth(method = "loess", se = FALSE)
+
+grid.arrange(p7, q7, nrow = 1)
+```
+
+
+## Check normality
+
+```{r}
+# data1 %>% ggplot() +
+#   aes(sample = resid1) +
+#   geom_qq(size = 2) + geom_qq_line()
+
+library(ggfortify)
+autoplot(lm1, which = 1:2)
+```
+
+```{r}
+# data2 %>% ggplot() +
+#   aes(sample = resid2) +
+#   geom_qq(size = 2) + geom_qq_line()
+
+autoplot(lm2, which = 1:2)
+```
+
+```{r}
+# data3 %>% ggplot() +
+#   aes(sample = resid3) +
+#   geom_qq(size = 2) + geom_qq_line()
+autoplot(lm3, which = 1:2)
+```
+
+```{r}
+# data4 %>% ggplot() +
+#   aes(sample = resid4) +
+#   geom_qq(size = 2) + geom_qq_line()
+autoplot(lm4, which = 1:2)
+```
+
+```{r}
+# data5 %>% ggplot() +
+#   aes(sample = resid5) +
+#   geom_qq(size = 2) + geom_qq_line()
+autoplot(lm5, which = 1:2)
+```
+
+```{r}
+# data6 %>% ggplot() +
+#   aes(sample = resid6) +
+#   geom_qq(size = 2) + geom_qq_line()
+autoplot(lm6, which = 1:2)
+```
+
+```{r}
+autoplot(lm7, which = 1:2)
+```
+
+## Use GGally
+
+```{r, message = FALSE}
+# install.packages("GGally")
+library(GGally)
+my_fn <- function(data, mapping, ...){
+p <- ggplot(data = data, mapping = mapping) + 
+    geom_point() + 
+    geom_smooth(method=loess, fill="red", color="red", se = FALSE)
+
+# geom_smooth(method=lm, fill="blue", color="blue", se = FALSE)
+
+p
+}
+GGally::ggpairs(data, columns = 1:9, lower = list(continuous = my_fn)) + theme_bw(base_size = 10)
+```
+
+```{r}
+lmTotal = lm(rings ~ ., data)
+summary(lmTotal)$coefficients %>% round(4)
+lmTotal
+```
+
+```{r}
+extract_eq(lmTotal, use_coefs = TRUE)
+```
+
+

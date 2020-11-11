@@ -90,21 +90,72 @@ Check residuals
 ```{r}
 MRed = lm(sqrt_log_rings ~ ., transformed)
 autoplot(MRed, which=1:2)
+```
 
+```{r}
+summary(MRed)
+```
+
+
+```{r}
+# remotes::install_github("datalorax/equatiomatic")
+library(equatiomatic)
+```
+
+```{r}
+extract_eq(MRed, use_coefs = TRUE)
 
 ```
+
+Show in New WindowClear OutputExpand/Collapse Output
+$$
+\operatorname{sqrt\_log\_rings} = 1.45 + 0.2(\operatorname{log\_whole}) - 0.19(\operatorname{log\_shucked}) - 0.02(\operatorname{log\_viscera}) + 0.11(\operatorname{log\_shell}) + 0.07(\operatorname{log\_diam}) - 0.08(\operatorname{log\_length}) + 0.12(\operatorname{sqrt\_height}) - 0.01(\operatorname{sex\_i}) + \epsilon
+$$
+
+RMSE
+```{r}
+predicted = 1.45 + 0.2*transformed$log_whole - 0.19*transformed$log_shucked - 0.02*transformed$log_viscera + 0.11*transformed$log_shell + 0.07*transformed$log_diam - 0.08*transformed$log_length + 0.12*transformed$sqrt_height - 0.01*transformed$sex_i
+to_compare = predicted - transformed$sqrt_log_rings
+new_Data = data.frame(log_whole = transformed$log_whole,
+           log_shucked = transformed$log_shucked,
+           log_viscera = transformed$log_viscera,
+           log_shell = transformed$log_shell,
+           log_diam = transformed$log_diam,
+           log_length = transformed$log_length,
+           sqrt_height = transformed$sqrt_height,
+           sex_f = transformed$sex_f,
+           sex_i = transformed$sex_i)
+full_predict = predict(MRed, newdata=new_Data)
+```
+
+
+```{r}
+mse = mean((transformed$sqrt_log_rings - full_predict)^2)
+sqrt(mse)
+```
+
+```{r}
+mae = mean(abs(transformed$sqrt_log_rings - full_predict))
+mae
+```
+
+```{r}
+nrow(transformed) - 10 * 417
+```
+
+We have 10 folds of 417 and 1 fold of 5 observations
+
 Cross validation
 ```{r}
-
+tr_red = transformed
 set.seed(1)
-fold_id= c(1:7, rep(1:10, each=417))
+fold_id= c(1:5, rep(1:10, each=417))
 tr_red$fold_id = sample(fold_id, replace = FALSE)
 head(tr_red)
 
 
 k = 10
-full_mse = vector(mode="numeric", length=k)
-full_mae = vector(mode="numeric", length=k)
+full_mse = full_mae = vector(mode="numeric", length=k)
 
 for (i in 1:k) {
     test_set = tr_red[fold_id == i,]
@@ -114,20 +165,38 @@ for (i in 1:k) {
     full_mse[i] = mean((test_set$sqrt_log_rings - full_pred)^2)
     full_mae[i] = mean(abs(test_set$sqrt_log_rings - full_pred))
 }
-
-# cv_res = tibble(full_mse, full_mae)
-# cv_res
+```
 
 
-#cv_full = train(
-#    sqrt_log_rings ~ .,
-#     tr_red,
-#     trtControl = trainControl(
-#         method = "cv", number = 10,
-#         verboseIter = FALSE
-#     )
-# )
-# 
-# cv_full
+```{r}
+cv_res = tibble(full_mse, full_mae)
+cv_res
+
+sqrt(mean(full_mse)) %>% round(2)
+```
+
+
+```{r}
+```
+
+
+```{r}
+cv_full = train(
+   sqrt_log_rings ~ . - sex_f,
+    tr_red,
+    method = "lm",
+    trtControl = trainControl(
+        method = "cv", number = 10,
+        verboseIter = FALSE
+    )
+)
+
+cv_full
+```
+
+```{r}
+result = resamples(list(full = cv_fill))
+ggplot(result, metric = "RMSE") + labs(y = "RMSE")
+ggplot(result, metric = "MAE") + labs(y = "MAE")
 ```
 
