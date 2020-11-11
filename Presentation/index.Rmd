@@ -273,3 +273,8 @@ myBib <- ReadBib("assets/example.bib", check = FALSE)
 $\widehat{\sqrt{log(rings)}} = 1.43 + 0.11 log(shell) - 0.19 log(shucked) + 0.19 log(whole) - 0.03 log(viscera)$ 
 $$- 0.13 \sqrt{height} - 0.02 Sex_{infant}$$
 
+Adjusted $R^2$ is 0.647.
+
+RMSE is 0.0657.
+
+MAE is 0.0495.
