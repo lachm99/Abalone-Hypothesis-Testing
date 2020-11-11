@@ -211,6 +211,7 @@ step.fwd.aic = step(M2, scope=list(lower=M2, upper=M1),                    direc
 # summary(step.fwd.aic)
 ```
 
+
 ## Model Selection
 
 ```{r}
@@ -243,14 +244,115 @@ qqline(step.fwd.aic$residuals)
 ]
 ---
 
-## p-values
+## Comparing RMSE and MAE
 
 
 ```{r}
-sjPlot::tab_model(step.fwd.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Final model"))
+tr_red = transformed
+set.seed(1)
+fold_id= c(1:5, rep(1:10, each=417))
+tr_red$fold_id = sample(fold_id, replace = FALSE)
+
+
+k = 10
+forward_mse = forward_mae = vector(mode = "numeric", length = k)
+back_mse = back_mae = vector(mode = "numeric", length = k)
+
+for (i in 1:k) {
+    test_set = tr_red[fold_id == i,]
+    training_set = tr_red[fold_id != i,]
+    M3 = lm(sqrt_log_rings ~ ., training_set)
+    back = step(M3, direction = "backward", trace = FALSE)
+    M4 = lm(sqrt_log_rings ~ 1, training_set)
+    forward = step(M4, scope=list(lower=M4, upper=M3),direction = "forward",trace = FALSE)
+    back_pred = predict(back, test_set)
+    forward_pred = predict(forward, test_set)
+    back_mse[i] = mean((test_set$sqrt_log_rings - back_pred)^2)
+    back_mae[i] = mean(abs(test_set$sqrt_log_rings - back_pred))
+    forward_mse[i] = mean((test_set$sqrt_log_rings - forward_pred)^2)
+    forward_mae[i] = mean(abs(test_set$sqrt_log_rings - forward_pred))
+}
 ```
 
+
+```{r}
+forward_res = tibble(forward_mse, forward_mae)
+back_res = tibble(back_mse, back_mae)
+c(sqrt(mean(forward_mse)), sqrt(mean(back_mse)))
+```
+
+<!-- Backward model has smaller rmes value -->
+
+```{r}
+c(mean(forward_mae), mean(back_mae))
+```
+
+
+```{r}
+# back_res %>% gather(key = "metric", value = "error") %>% 
+#   separate(col = metric, into = c("model", "metric")) %>%
+#   ggplot(aes(x = model, y = error)) + facet_wrap(~metric, scales = "free_y") +
+#   geom_boxplot()
+# 
+# forward_res %>% gather(key = "metric", value = "error") %>% 
+#   separate(col = metric, into = c("model", "metric")) %>%
+#   ggplot(aes(x = model, y = error)) + facet_wrap(~metric, scales = "free_y") +
+#   geom_boxplot()
+```
+
+
+```{r, warning = FALSE}
+cv_forward= train(
+    sqrt_log_rings ~ . - log_diam - log_length - sex_f,
+    transformed,
+    method = "lm",
+    trtControl = trainControl(
+        method = "cv", number = 10,
+        verboseIter = FALSE
+    )
+)
+
+# cv_forward
+```
+
+```{r, warning = FALSE}
+cv_back= train(
+    sqrt_log_rings ~ . -sex_f,
+    transformed,
+    method = "lm",
+    trtControl = trainControl(
+        method = "cv", number = 10,
+        verboseIter = FALSE
+    )
+)
+
+# cv_back
+```
+
+.pull-left[## .brand-red[RMSE].
+```{r}
+results = resamples(list(forward = cv_forward,
+                         back = cv_back))
+ggplot(results, metric = "RMSE") + labs(y = "RMSE")
+```
+]
+
+.pull-right[## .brand-red[MAE].
+```{r}
+ggplot(results, metric = "MAE") + labs(y = "MAE")
+```
+]
+
 ---
+
+## Final model
+
+```{r}
+sjPlot::tab_model(step.back.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Final model"))
+```
+
+$\widehat{\sqrt{log(rings)}} = 1.43 + 0.11 log(shell) - 0.19 log(shucked) + 0.19 log(whole) - 0.03 log(viscera)$ 
+$$- 0.13 \sqrt{height} - 0.02 Sex_{infant}$$
 
 ```{r, load_refs, warning = FALSE, echo=FALSE, cache=FALSE}
 library(bibtex)
@@ -264,17 +366,4 @@ BibOptions(check.entries = FALSE,
 myBib <- ReadBib("assets/example.bib", check = FALSE)
 ```
 
-## Our Model
 
-<!-- $$ -->
-<!-- \widehat{\operatorname{\sqrt{log\\_rings}}} = 1.44 + 0.21(\operatorname{log\_whole}) - 0.20(\operatorname{log\_shucked}) - 0.02(\operatorname{log\_viscera}) + 0.11(\operatorname{log\_shell}) + 0.08(\operatorname{log\_diameter}) - 0.10(\operatorname{log\_length}) + 0.11(\operatorname{sqrt\_height}) + \epsilon -->
-<!-- $$ -->
-
-$\widehat{\sqrt{log(rings)}} = 1.43 + 0.11 log(shell) - 0.19 log(shucked) + 0.19 log(whole) - 0.03 log(viscera)$ 
-$$- 0.13 \sqrt{height} - 0.02 Sex_{infant}$$
-
-Adjusted $R^2$ is 0.647.
-
-RMSE is 0.0657.
-
-MAE is 0.0495.
