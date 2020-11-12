@@ -62,6 +62,9 @@ cols = c("sex",
 
 raw_data = readr::read_csv("../Data/abalone.data", cols)
 
+unfiltered = raw_data %>% mutate(sex = factor(sex, c("M", "F", "I")),
+                       rings = as.integer(rings))
+
 data = raw_data %>% mutate(sex = factor(sex, c("M", "F", "I")),
                        rings = as.integer(rings)) %>%
 filter(height < 0.5)
@@ -115,12 +118,22 @@ colnames(desc_table) = c("Variable Name",
 knitr::kable(desc_table)
 
 ```
-<!-- - Construct a model to predict .brand-red[abalone age] without exhaustive ring counting. -->
+
+.footnote[Table 1: Variables description of abalone dataset]
+
+---
+## Examining outliers
+
+```{r, fig.align='center'}
+ggplot(unfiltered) + aes(height) + geom_boxplot(color = "#00AFBB")
+```
+
+.footnote[Figure 1: Boxplot of abalone heights]
+---
+## Question, Initial Inspection and Transformations
 
 * Question: Can we generate a model to predict the number of rings an abalone has, purely from easily measured physical attributes?
 
----
-## Initial Inspection and Transformations
 ```{r, echo=FALSE}
 res = model.matrix(~sex, data)
 
@@ -166,6 +179,9 @@ qtlcharts::iplotCorr(transformed)
 
 .small[.brand-red[Including `Sex`; utilising dummy-coding to construct a contrast matrix.]]
 ]
+
+.footnote[Figure 2 and Figure 3: Correlation Matrices]
+
 ---
 
 .pull-left[## .brand-red[Initial, excluding `sex`].
@@ -192,6 +208,9 @@ GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data))
 ```
 
 ]
+
+.footnote[Figure 4 and Figure 5: Examination of data outputs before and after transformation]
+
 ---
 
 ```{r}
@@ -213,11 +232,19 @@ step.fwd.aic = step(M2, scope=list(lower=M2, upper=M1),                    direc
 ## Model Selection
 
 ```{r}
-# sjPlot::tab_model(step.fwd.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Forward model"))
-
-sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Forward model","Backward model"))
+sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Forward model","Backward model"), CSS = list(css.tdata = "padding:2px;text-align:left;vertical-align:top;"))
+# cat(tab$page.style)
 ```
 
+.footnote[Table 2: Results for Forward and Backward AIC model selection]
+
+---
+
+## Assumption Checking - Independence
+
+<image src="./assets/Independence.png" style="height:500px; margin-left:auto;margin-right:auto;display:block;">
+
+.footnote[Figure 6: Tasmania and Bass Strait, showing the five survey areas of abalones]
 
 
 ---
@@ -230,7 +257,7 @@ sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,d
 x = transformed
 x = x %>% mutate(lfitted = step.fwd.aic$fitted.values, lresid = step.fwd.aic$residuals )
 ggplot(x, aes(x = lfitted ,y = lresid)) + geom_point(size = 1) +geom_smooth() +
-  labs(title="Residuals")
+  labs(title="Residuals vs Fitted", x = "Fitted", y = "Residuals")
 ```
 ]
 
@@ -242,6 +269,7 @@ qqline(step.fwd.aic$residuals)
 ```
 ]
 
+.footnote[Figure 7 and Figure 8: Residuals against Fitted and QQ plot of Forward model]
 ---
 
 ## Assumption Checking - Back
@@ -252,7 +280,7 @@ qqline(step.fwd.aic$residuals)
 x = transformed
 x = x %>% mutate(lfitted = step.back.aic$fitted.values, lresid = step.back.aic$residuals )
 ggplot(x, aes(x = lfitted ,y = lresid)) + geom_point(size = 1) +geom_smooth() +
-  labs(title="Residuals")
+  labs(title="Residuals vs Fitted", x = "Fitted", y = "Residuals")
 ```
 ]
 
@@ -263,6 +291,8 @@ qqnorm(step.back.aic$residuals)
 qqline(step.back.aic$residuals)
 ```
 ]
+
+.footnote[Figure 9 and Figure 10: Residuals against Fitted and QQ plot of Backward model]
 ---
 
 ## Comparing RMSE and MAE
@@ -296,7 +326,7 @@ cv_back= train(
 # cv_back
 ```
 
-.pull-left[.
+.pull-left[
 ```{r}
 results = resamples(list(forward = cv_forward,
                          back = cv_back))
@@ -305,12 +335,14 @@ ggplot(results, metric = "RMSE") + labs(y = "RMSE")
 ```
 ]
 
-.pull-right[.
+.pull-right[
 ```{r}
 ggplot(results, metric = "MAE") + labs(y = "MAE")
 
 ```
 ]
+
+.footnote[Figure 11 and Figure 12: Comparing RMSE and MAE values between forward and backward models]
 
 ---
 
@@ -318,17 +350,21 @@ ggplot(results, metric = "MAE") + labs(y = "MAE")
 
 .pull-left[
 ```{r}
-sjPlot::tab_model(step.back.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Final model"))
+sjPlot::tab_model(step.back.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Final model"), CSS = list(css.tdata = "padding:2px;text-align:left;vertical-align:top;"))
 ```
 ]
 
 
 .pull-right[
-$\widehat{\sqrt{log(rings)}} = 1.45 + 0.11 log(shell)$ 
-$$- 0.19 log(shucked) + 0.20 log(whole)$$
-$$- 0.02 log(viscera) + 0.07 log(diam)$$ 
-$$- 0.08 log(length) + 0.12 \sqrt{height}$$
-$$- 0.01 Sex_{infant}$$
+> $\widehat{\sqrt{log(rings)}} = 1.45 + 0.20 log(whole)$ 
+>
+>    $- 0.19 log(shucked) - 0.02 log(viscera)$
+>
+>    $+ 0.11 log(shell) + 0.07 log(diameter)$ 
+>
+>    $- 0.08 log(length) + 0.12 \sqrt{height}$
+>
+>    $- 0.01 Sex_{infant}$
 
 
 
@@ -337,6 +373,8 @@ $$- 0.01 Sex_{infant}$$
 - Unexplained variance of 0.353.
 - Further research into Abalone factors that can help predict age.
 ]
+
+.footnote[Table 3: Backward model as Final model]
 
 ```{r, load_refs, warning = FALSE, echo=FALSE, cache=FALSE}
 library(bibtex)
