@@ -117,7 +117,7 @@ knitr::kable(desc_table)
 ```
 <!-- - Construct a model to predict .brand-red[abalone age] without exhaustive ring counting. -->
 
-* Question: investigate whether we can predict the number of rings/age of the abalone with all the provided variables
+* Question: Can we generate a model to predict the number of rings an abalone has, purely from easily measured physical attributes?
 
 ---
 ## Initial Inspection and Transformations
@@ -173,8 +173,7 @@ qtlcharts::iplotCorr(transformed)
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = data, mapping = mapping) +
     geom_point(shape=".") +
-    geom_smooth(method=lm, fill = "green", color="green", se = FALSE)  +
-    geom_smooth(method=loess, fill = "red", color="red", se = FALSE)
+    geom_smooth(method=lm, fill = "red", color="red", se = FALSE)
   p
 }
 GGally::ggpairs(data, columns = 1:9, lower = list(continuous = fn_data)) + theme_bw(base_size = 10)
@@ -186,8 +185,7 @@ GGally::ggpairs(data, columns = 1:9, lower = list(continuous = fn_data)) + theme
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = transformed, mapping = mapping) +
     geom_point(shape=".") +
-    geom_smooth(method=lm, fill = "green", color="green", se = FALSE) +
-    geom_smooth(method=loess, fill = "red", color="red", se = FALSE)
+    geom_smooth(method=lm, fill = "red", color="red", se = FALSE)
   p
 }
 GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data)) + theme_bw(base_size = 10)
@@ -226,16 +224,17 @@ sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,d
 
 ## Assumption Checking - Forward
 
-.pull-left[## .brand-red[ Residual vs Fitted].
+.pull-left[
 ```{r, warning = FALSE}
 # autoplot(step.fwd.aic,which=1)
 x = transformed
 x = x %>% mutate(lfitted = step.fwd.aic$fitted.values, lresid = step.fwd.aic$residuals )
-ggplot(x, aes(x = lfitted ,y = lresid)) + geom_point(size = 1) +geom_smooth()
+ggplot(x, aes(x = lfitted ,y = lresid)) + geom_point(size = 1) +geom_smooth() +
+  labs(title="Residuals")
 ```
 ]
 
-.pull-right[## .brand-red[QQ plot].
+.pull-right[
 ```{r, warning = FALSE}
 # autoplot(step.fwd.aic,which=2)
 qqnorm(step.fwd.aic$residuals)
@@ -247,16 +246,17 @@ qqline(step.fwd.aic$residuals)
 
 ## Assumption Checking - Back
 
-.pull-left[## .brand-red[ Residual vs Fitted].
+.pull-left[
 ```{r, warning = FALSE}
 # autoplot(step.fwd.aic,which=1)
 x = transformed
 x = x %>% mutate(lfitted = step.back.aic$fitted.values, lresid = step.back.aic$residuals )
-ggplot(x, aes(x = lfitted ,y = lresid)) + geom_point(size = 1) +geom_smooth()
+ggplot(x, aes(x = lfitted ,y = lresid)) + geom_point(size = 1) +geom_smooth() +
+  labs(title="Residuals")
 ```
 ]
 
-.pull-right[## .brand-red[QQ plot].
+.pull-right[
 ```{r, warning = FALSE}
 # autoplot(step.fwd.aic,which=2)
 qqnorm(step.back.aic$residuals)
@@ -267,50 +267,6 @@ qqline(step.back.aic$residuals)
 
 ## Comparing RMSE and MAE
 
-
-```{r}
-tr_red = transformed
-set.seed(1)
-fold_id= c(1:5, rep(1:10, each=417))
-tr_red$fold_id = sample(fold_id, replace = FALSE)
-
-
-k = 10
-forward_mse = forward_mae = vector(mode = "numeric", length = k)
-back_mse = back_mae = vector(mode = "numeric", length = k)
-
-for (i in 1:k) {
-    test_set = tr_red[fold_id == i,]
-    training_set = tr_red[fold_id != i,]
-    M3 = lm(sqrt_log_rings ~ ., training_set)
-    back = step(M3, direction = "backward", trace = FALSE)
-    M4 = lm(sqrt_log_rings ~ 1, training_set)
-    forward = step(M4, scope=list(lower=M4, upper=M3),direction = "forward",trace = FALSE)
-    back_pred = predict(back, test_set)
-    forward_pred = predict(forward, test_set)
-    back_mse[i] = mean((test_set$sqrt_log_rings - back_pred)^2)
-    back_mae[i] = mean(abs(test_set$sqrt_log_rings - back_pred))
-    forward_mse[i] = mean((test_set$sqrt_log_rings - forward_pred)^2)
-    forward_mae[i] = mean(abs(test_set$sqrt_log_rings - forward_pred))
-}
-```
-
-```{r}
-forward_res = tibble(forward_mse, forward_mae)
-back_res = tibble(back_mse, back_mae)
-```
-
-```{r}
-# back_res %>% gather(key = "metric", value = "error") %>% 
-#   separate(col = metric, into = c("model", "metric")) %>%
-#   ggplot(aes(x = model, y = error)) + facet_wrap(~metric, scales = "free_y") +
-#   geom_boxplot()
-# 
-# forward_res %>% gather(key = "metric", value = "error") %>% 
-#   separate(col = metric, into = c("model", "metric")) %>%
-#   ggplot(aes(x = model, y = error)) + facet_wrap(~metric, scales = "free_y") +
-#   geom_boxplot()
-```
 
 ```{r, warning = FALSE}
 cv_forward= train(
@@ -346,7 +302,6 @@ results = resamples(list(forward = cv_forward,
                          back = cv_back))
 ggplot(results, metric = "RMSE") + labs(y = "RMSE")
 
-c(sqrt(mean(forward_mse)), sqrt(mean(back_mse)))
 ```
 ]
 
@@ -354,7 +309,6 @@ c(sqrt(mean(forward_mse)), sqrt(mean(back_mse)))
 ```{r}
 ggplot(results, metric = "MAE") + labs(y = "MAE")
 
-c(mean(forward_mae), mean(back_mae))
 ```
 ]
 
@@ -362,7 +316,7 @@ c(mean(forward_mae), mean(back_mae))
 
 ## Final model
 
-.pull-left[.
+.pull-left[
 ```{r}
 sjPlot::tab_model(step.back.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Final model"))
 ```
@@ -375,8 +329,14 @@ $$- 0.19 log(shucked) + 0.20 log(whole)$$
 $$- 0.02 log(viscera) + 0.07 log(diam)$$ 
 $$- 0.08 log(length) + 0.12 \sqrt{height}$$
 $$- 0.01 Sex_{infant}$$
-]
 
+
+
+## .brand-red[Discussion/Question] 
+- Able to predict age. 
+- Unexplained variance of 0.353.
+- Further research into Abalone factors that can help predict age.
+]
 
 ```{r, load_refs, warning = FALSE, echo=FALSE, cache=FALSE}
 library(bibtex)
@@ -390,4 +350,46 @@ BibOptions(check.entries = FALSE,
 myBib <- ReadBib("assets/example.bib", check = FALSE)
 ```
 
+---
+## Citations
+```{r, echo=FALSE}
+# 
+# citation("tidyverse")
+# citation("qtlcharts")
+# citation("corrplot")
+# citation("GGally")
+# citation("ggfortify")
+# citation("caret")
+# citation("sjPlot")
 
+```
+
+- Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source
+  Software, 4(43), 1686, https://doi.org/10.21105/joss.01686
+  
+- Broman KW (2015) R/qtlcharts: interactive graphics for quantitative trait
+  locus mapping. Genetics 199:359-361 doi:10.1534/genetics.114.172742
+  
+- Taiyun Wei and Viliam Simko (2017). R package "corrplot": Visualization of
+  a Correlation Matrix (Version 0.84). Available from
+  https://github.com/taiyun/corrplot
+  
+- Barret Schloerke, Di Cook, Joseph Larmarange, Francois Briatte, Moritz
+  Marbach, Edwin Thoen, Amos Elberg and Jason Crowley (2020). GGally:
+  Extension to 'ggplot2'. R package version 2.0.0.
+  https://CRAN.R-project.org/package=GGally
+
+- Yuan Tang, Masaaki Horikoshi, and Wenxuan Li. "ggfortify: Unified Interface
+  to Visualize Statistical Result of Popular R Packages." The R Journal 8.2
+  (2016): 478-489.
+
+- Masaaki Horikoshi and Yuan Tang (2016). ggfortify: Data Visualization Tools
+  for Statistical Analysis Results.
+  https://CRAN.R-project.org/package=ggfortify
+
+- Max Kuhn (2020). caret: Classification and Regression Training. R package
+  version 6.0-86. https://CRAN.R-project.org/package=caret
+
+- Lüdecke D (2020). _sjPlot: Data Visualization for Statistics in Social
+Science_. R package version 2.8.6, <URL:
+https://CRAN.R-project.org/package=sjPlot>.
