@@ -1,19 +1,14 @@
 ---
-title: Group Report (Template)
+title: Abalone Dataset
 
 # Use letters for affiliations
 author:
-  - name: First Author
-    affiliation: a
-  - name: Second Author
-    affiliation: a,b
+  - name: Group_Early_5
 address:
-  - code: a
-    address: Institute of Smoke and Magic, University of Sometown, Sometown, XY, 12345
-  - code: b
-    address: Department of Neat Tricks, Whereever State University, Someplace, MC, 67890
+    address: SID1,SID2,SID3,SID4,SID5
+    #address: Department of Neat Tricks, Whereever State University, Someplace, MC, 67890
     
-# Optional: line of arbitrary text with additional information.
+# Optional: line of arbitrary text with additional information.G
 # Could be used, for example, to mention the bibliographic info in a post-print.
 # If not specified, defaults to "This version was compiled on \today"
 #date_subtitle: Published in *Journal of Statistical Software*, 2018
@@ -26,9 +21,7 @@ doi_footer: "https://cran.r-project.org/package=YourPackage"
 
 # Abstract
 abstract: |
-  Your abstract will be typeset here, and used by default a visually distinctive font.
-  An abstract should explain to the general reader the major contributions of the article. 
-
+  We are doing multiple regression on an abalone dataset with 4177 observations with 9 different variables to see if we could use several physical measurements to predict the rings of abalones,which gives us the ages of abalones in years.In order to select an appropriate model, we did some log transformation and square root of transformations to appropriately fit the observed values into model.In addition to that we ran forward and backward approach in distinguishing the most appropriate model and finally interpret the result from the model.
 # Optional: Acknowledgements
 acknowledgements: |
   This template package builds upon, and extends, the work of the excellent
@@ -93,107 +86,73 @@ vignette: >
 
 ## Introduction 
 
-This *pinp is not PNAS* template started when the introduction to
-[Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html) by \cite{PeerJ:Rcpp} 
-was converted into this updated
-[Rcpp Introduction](https://eddelbuettel.github.io/pinp/Rcpp-introduction.pdf)
-vignette.  It is based on the
-[pnas_article](https://github.com/rstudio/rticles/tree/master/inst/rmarkdown/templates/pnas_article)
-template of the wonderful [rticles](https://cran.r-project.org/package=rticles) package by
-\cite{CRAN:rticles}. The conversion from markdown to latex is facilitated by
-[rmarkdown](https://cran.r-project.org/package=rmarkdown)
-\citep{CRAN:rmarkdown} and [knitr](https://cran.r-project.org/package=knitr)
-\citep{CRAN:knitr}. The underlying LaTeX macros are from
-[pnas.org](http://www.pnas.org/site/authors/latex.xhtml).
-
-The remainder of the document carries over from the corresponding
-[pnas_article](https://github.com/rstudio/rticles/tree/master/inst/rmarkdown/templates/pnas_article)
-template document. but has been edited and updated to our use case.  A
-few specific tips follow.  In general, for fine-tuning some knowledge
-of LaTeX is helpful.
+Use multiple regression to analyse a data set of abalones with multiple predictor variables,namely whole weight,shuck weight,viscera weight,shell weight,diameters,length,height of the abalones.
 
 
 
-## Author Affiliations 
+## Data set
 
-Per common academic best practice, you can include your department,
-institution, and complete address, with the ZIP/postal code, for each
-author. Use lower case letters to match authors with institutions, as
-shown in the example. Authors with an ORCID ID may supply this
-information at submission.
-
-## Document Options
-
-We support several options via the YAML header
-
-- Setting a DOI or URL footer, for example for the CRAN package URL,
-  which is placed in the bottom-left footer of the title page and even pages;
-- Setting a footer label, for example _YourPackage Vignette_ stating
-  your package, which is placed in the bottom-right footer on odd
-  pages;
-- Setting a free-form author field used on the inside footer;
-- Optional _Draft_ watermark to be added to each page;
-- Line of custom text in subtitle (`date_subtitle`) suitable to give publication
-info of the draft, e.g. journal name in a post-print;
-- Document date that appears in the footer can be specified manually using
-`document_date`.
+The original data was collected by the Marine Resources Division in Taroona, Tasmania. The current set is provided by the University of California Irvine Machine Learning Repository. It contains 4177 observations with 8 different numerical variables, 1 categorical and no missing value. 2 unwanted outliers were found in the height variable which will be disregarded. 
+ 
+In detail, main variables that were analysed were physical attributes of the abalone ranging from dimensions of the length, diameter of the shell, the height of the abalone captured in millimeters and weighting variables that encompass specific weights varying from the weight of the meat, after bleeding to the weight of the shell captured in grams. After some typing and data type corrections, Rings is the most relevant and suitable variable to Age that is the variable to be predicted. 
 
 
+## Analysis
 
-## References 
-
-Here we differ from PNAS and suggest natbib. References will appear in
-author-year form. Use `\citet{}`, `\citep{}`, etc as usual.
-
-We default to the `jss.bst` style. To switch to a different bibliography
-style, please use `biblio-style: style` in the YAML header.
+Assumptions:
+Linearity:there’s no obvious curvature in the residual vs fitted values plot,looks linear enough.
+Independence:the data was independently collected over 5 different regions in the tasman sea as the article about the dataset said.
+Homoskedasticity: the residuals don’t appear to be fanning out or changing their variability over the range of the fitted values.
+Normality:In the QQ plot, the points are reasonably close to the diagonal line,except for the trivial bottom 5 or so points.
 
 
-## Inline R Code 
+## Results:
+
+Investigation Question: Can we predict the number of rings abalones have, using only an abalones physical attributes which are easily and quickly measured?
+
+All variables have significant p-values giving evidence that there is a significant relationship between them and the square root log of the number of rings. When we examine the significance of each level of our sex variable, we decided to retain the sex factor of whether abalones are infants or adults rather than whether abalones are male, female or infant due to how the p-value of sex_female not providing enough evidence to reject the null hypothesis that coefficient is equal to zero. This is done by utilising stepping forward and stepping backwards AICs, we have arrived at two models with the same adjusted R^2 thus we need to encompass the RMSE and MAE to identify the better performing model. 
+
+Cross validation was used to compute RMSE and MAE to account for and minimise overfitting.  RMSE and MAE values of the backward model are slightly smaller compared to forward model’s. Hence we proceed with the backward model.
+
+Therefore the following is our model,
+
+ sqrt log of number of rings = 1.45 + 0.2log whole weight - 0.19 log shucked weight - 
+0.02 log viscera weight + 0.11 log shell weight +
+0.07 log diameter - 0.08 log length +
+ 0.12 sqrt height - 0.01  sexinfant+ 
+
+Which can be translated into an equivalent model
+log of number of rings = 2.1025 + 0.08 log whole weight - 0.0722 log shucked weight - 
+0.0008 log viscera weight + 0.0242 log shell weight +
+0.0098 log diameter - 0.0128 log length +
+ 0.0144  height - 0.0001 sexinfant2 + 
+
+On average a one percent increase in:
+Whole weight will result in a 0.08% change in number of rings
+Shucked weight will result in a 0.0722% change in number of rings
+Viscera weight will result in a 0.0008% change in number of rings
+Shell weight will result in a 0.0242% change in number of rings
+Diameter will result in a 0.0098% change in number of rings
+Length will result in a 0.0128% change in number of rings
+And on average, a one unit increase in:
+height will result in a 0.0144 x 100% change in number of rings
+Sex_infant will result in a 0.0001 x 100% change in number of rings
+
+
+
+## Discussion and conclusion:
 
 The PNAS sample included a fixed PNG image here, but this document prefers
 to show the results and embedding of _R_ code. 
 
 ```{r figex, fig.width=3, fig.height=3, cache=TRUE, echo=TRUE, fig.cap="Narrow ggplot2 figure"}
-library(ggplot2)
-ggplot(mtcars, aes(wt, mpg)) +
-    geom_point(size=3, aes(colour=factor(cyl))) +
-    theme(legend.position="none")
+
 ```
-
-Here we use a standard knitr bloc with explicit options for
-
-- figure width and height (`fig.width`, `fig.height`), both set to three inches;
-- whether the code is shown (`echo=TRUE`); and
-- the caption (`fig.cap`) as shown above.
 
 
 ## Digital Figures 
 
-Markdown, Pandoc and LaTeX support `.eps` and `.pdf` files.
 
-Figures and Tables should be labelled and referenced in the standard way
-using the `\label{}` and `\ref{}` commands.
-
-The R examples above show how to insert a column-wide
-figure. To insert a figure wider than one column, please use the
-`\begin{figure*}...\end{figure*}` environment. 
-
-One (roundabout) way of doing this is to _not_ actually plot a figure, but to
-save it in a file as the following segment shows:
-
-```{r densityPlot, echo=TRUE}
-library(ggplot2)
-p <- ggplot(data = midwest,
-            mapping = aes(x = area,
-                          fill = state,
-                          color = state)) +
-    geom_density(alpha = 0.3)
-## save to file
-suppressMessages(ggsave("densities.pdf", p))
-```
-
-This file is then included via standard LaTeX commands.
 
 \begin{figure*}
   \begin{center}
@@ -205,35 +164,7 @@ This file is then included via standard LaTeX commands.
 
 ## Typeset Code (But Do Not Run It) 
 
-We can also just show code.
-
-```r
-xx <- faithful[,"eruptions"]
-fit <- density(xx)
-plot(fit)
-```
-
-This simply used a pandoc bloc started and ended by three backticks,
-with `r` as the language choice.  Similarly, _many_ other languages
-can be typeset directly simply by relying on pandoc.
-
-
 ## Single column equations 
-
-Authors may use 1- or 2-column equations in their article, according to
-their preference.
-
-To allow an equation to span both columns, options are to use the
-`\begin{figure*}...\end{figure*}` environment mentioned above for
-figures. The `\begin{widetext}...\end{widetext}` environment as shown
-in equation \ref{eqn:example} below is deprecated, but \LaTeX commands
-`\onecolumn` and `\twocolumn` work fine.
-
-Please note that this option may run into problems with floats and
-footnotes, as mentioned in the [cuted package
-documentation](http://texdoc.net/pkg/cuted). In the case of problems
-with footnotes, it may be possible to correct the situation using
-commands `\footnotemark` and `\footnotetext`.
 
 \begin{equation}
   \begin{aligned}
