@@ -128,7 +128,7 @@ knitr::kable(desc_table)
 ## Examining outliers
 
 ```{r, fig.align='center'}
-ggplot(unfiltered) + aes(x = height, y = rings) + geom_point(color = "#ff5657")
+ggplot(unfiltered) + aes(x = height) + geom_boxplot(color = "#ff5657")
 ```
 
 .footnote[Figure 1: Examining outliers - abalone rings against height]
@@ -302,6 +302,7 @@ qqline(step.back.aic$residuals)
 
 
 ```{r, warning = FALSE}
+set.seed(1)
 cv_forward= train(
     sqrt_log_rings ~ . - log_diam - log_length - sex_f,
     transformed,
