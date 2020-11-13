@@ -100,20 +100,19 @@ In detail, main variables that were analysed were physical attributes of the aba
 ## Analysis
 
 Assumptions:
+* Linearity:there’s no obvious curvature in the residual vs fitted values plot,looks linear enough.
+* Independence:the data was independently collected over 5 different regions in the tasman sea as the article about the dataset said.
+* Homoskedasticity: the residuals don’t appear to be fanning out or changing their variability over the range of the fitted values.
 
-*Linearity:there’s no obvious curvature in the residual vs fitted values plot,looks linear enough.
-*Independence:the data was independently collected over 5 different regions in the tasman sea as the article about the dataset said.
-*Homoskedasticity: the residuals don’t appear to be fanning out or changing their variability over the range of the fitted values.
-
-*Normality:In the QQ plot, the points are reasonably close to the diagonal line,except for the trivial bottom 5 or so points.
+* Normality:In the QQ plot, the points are reasonably close to the diagonal line,except for the trivial bottom 5 or so points.
 
 
 ## Results:
 
 Investigation Question: Can we predict the number of rings abalones have, using only an abalones physical attributes which are easily and quickly measured?
 
-*All variables have significant p-values giving evidence that there is a significant relationship between them and the square root log of the number of rings. 
-*When we examine the significance of each level of our sex variable, we decided to retain the sex factor of whether abalones are infants or adults rather than whether abalones are male, female or infant due to how the p-value of sex_female not providing enough evidence to reject the null hypothesis that coefficient is equal to zero. This is done by utilising stepping forward and stepping backwards AICs, we have arrived at two models with the same adjusted R^2 thus we need to encompass the RMSE and MAE to identify the better performing model. 
+* All variables have significant p-values giving evidence that there is a significant relationship between them and the square root log of the number of rings. 
+* When we examine the significance of each level of our sex variable, we decided to retain the sex factor of whether abalones are infants or adults rather than whether abalones are male, female or infant due to how the p-value of sex_female not providing enough evidence to reject the null hypothesis that coefficient is equal to zero. This is done by utilising stepping forward and stepping backwards AICs, we have arrived at two models with the same adjusted R^2 thus we need to encompass the RMSE and MAE to identify the better performing model. 
 
 **Cross validation** was used to compute RMSE and MAE to account for and minimise overfitting. RMSE and MAE values of the backward model are slightly smaller compared to forward model’s. Hence we proceed with the backward model.
 
@@ -144,17 +143,17 @@ Which can be translated into an equivalent model
 
 On average a one percent increase in:
 
-*Whole weight will result in a 0.08% change in number of rings
-*Shucked weight will result in a 0.0722% change in number of rings
-*Viscera weight will result in a 0.0008% change in number of rings
-*Shell weight will result in a 0.0242% change in number of rings
-*Diameter will result in a 0.0098% change in number of rings
+* Whole weight will result in a 0.08% change in number of rings
+* Shucked weight will result in a 0.0722% change in number of rings
+* Viscera weight will result in a 0.0008% change in number of rings
+* Shell weight will result in a 0.0242% change in number of rings
+* Diameter will result in a 0.0098% change in number of rings
 *Length will result in a 0.0128% change in number of rings
 
 And on average, a one unit increase in:
 
-*height will result in a 0.0144 x 100% change in number of rings
-*Sex_infant will result in a 0.0001 x 100% change in number of rings
+* Height will result in a 0.0144 x 100% change in number of rings
+* Sex_infant will result in a 0.0001 x 100% change in number of rings
 
 
 
@@ -188,7 +187,7 @@ to show the results and embedding of _R_ code.
 
 
 <!-- pandoc writes all tables using longtable, which fails in 2-column mode
-
+=
   Species                    CBS     CV     G3
   ----------------------- ------ ------ ------
   1\. Acetaldehyde           0.0    0.0    0.0
