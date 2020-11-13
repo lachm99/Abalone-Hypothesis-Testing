@@ -5,7 +5,7 @@ author: "M09B Early 5"
 date: "November 20"
 output:
   xaringan::moon_reader:
-    css: ["default", "assets/sydney-fonts.css", "assets/sydney.css"]
+    css: ["default", "assets/sydney-fonts.css", "assets/sydney-blue.css"]
     self_contained: false # if true, fonts will be stored locally
     seal: false # show a title slide with YAML information
     includes:
@@ -20,9 +20,7 @@ output:
         scroll: false # disable slide transitions by scrolling
 ---
 class: title-slide
-<!-- https://pelledolce.com/wp-content/uploads/abalones.jpg -->
-<!-- https://miro.medium.com/max/3478/1*W3e117artUa9v4JrpjX9Gw.jpeg -->
-background-image: url("./assets/abalone.png")
+background-image: url("./assets/abaloneshell.jpg")
 background-position: 100% 50%
 background-size: 50% 100%
 
@@ -76,7 +74,7 @@ filter(height < 0.5)
 
 ## Data Description - Abalone
 
-- Dataset concerning .brand-red[**marine snails**], via Marine Research Laboratories, Taroona.
+- Dataset concerning .brand-turquoise[**marine snails**], via Marine Research Laboratories, Taroona.
 
 
 ```{r, echo=FALSE}
@@ -128,11 +126,13 @@ knitr::kable(desc_table)
 ## Examining outliers
 
 ```{r, fig.align='center'}
-ggplot(unfiltered) + aes(x = height, y = rings) + geom_point(color = "#ff5657")
+ggplot(unfiltered) + aes(x = height, y = rings) + geom_point(color = "#01cad7")
 ```
 
 .footnote[Figure 1: Examining outliers - abalone rings against height]
+
 ---
+
 ## Investigation Question, Initial Inspection and Transformations
 
 .brand-red[* Question: Can we generate a model to predict the number of rings an abalone has, purely from easily measured physical attributes?]
@@ -170,7 +170,7 @@ transformed = numericised_sex %>% mutate(log_whole = log(weight_whole),
 qtlcharts::iplotCorr(select(data,-sex))
 ```
 
-.small[.brand-red[Excluding `Sex` factor.]]
+.small[.brand-main[Excluding `Sex` factor.]]
 
 ]
 
@@ -180,31 +180,31 @@ qtlcharts::iplotCorr(select(data,-sex))
 qtlcharts::iplotCorr(transformed)
 ```
 
-.small[.brand-red[Including `Sex`; utilising dummy-coding to construct a contrast matrix.]]
+.small[.brand-main[Including `Sex`; utilising dummy-coding to construct a contrast matrix.]]
 ]
 
 .footnote[Figure 2 and Figure 3: Correlation Matrices]
 
 ---
 
-.pull-left[## .brand-red[Initial, excluding `sex`]
+.pull-left[## .brand-turquoise[Initial, excluding `sex`]
 ```{r}
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = data, mapping = mapping) +
     geom_point(shape=".") +
-    geom_smooth(method=lm, fill = "red", color="red", se = FALSE)
+    geom_smooth(method=lm, fill = "blue", color="blue", se = FALSE)
   p
 }
 GGally::ggpairs(data, columns = 1:9, lower = list(continuous = fn_data)) + theme_bw(base_size = 10)
 ```
 ]
 
-.pull-right[## .brand-red[Transformed, including `sex`]
+.pull-right[## .brand-turquoise[Transformed, including `sex`]
 ```{r, warning = FALSE}
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = transformed, mapping = mapping) +
     geom_point(shape=".") +
-    geom_smooth(method=lm, fill = "red", color="red", se = FALSE)
+    geom_smooth(method=lm, fill = "blue", color="blue", se = FALSE)
   p
 }
 GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data)) + theme_bw(base_size = 10)
@@ -371,7 +371,7 @@ sjPlot::tab_model(step.back.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("
 
 
 
-## .brand-red[Discussion/Question] 
+## .brand-turquoise[Discussion/Question] 
 - Able to predict age. 
 - Unexplained variance of 0.353.
 - Further research into Abalone factors that can help predict age.
@@ -434,3 +434,4 @@ myBib <- ReadBib("assets/example.bib", check = FALSE)
 - Lüdecke D (2020). _sjPlot: Data Visualization for Statistics in Social
 Science_. R package version 2.8.6, <URL:
 https://CRAN.R-project.org/package=sjPlot>.
+
