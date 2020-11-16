@@ -148,7 +148,7 @@ On average a one percent increase in:
 * Viscera weight will result in a 0.0008% change in number of rings
 * Shell weight will result in a 0.0242% change in number of rings
 * Diameter will result in a 0.0098% change in number of rings
-*Length will result in a 0.0128% change in number of rings
+* Length will result in a 0.0128% change in number of rings
 
 And on average, a one unit increase in:
 
