@@ -1,0 +1,272 @@
+---
+title: An Abalone-Age Investigation
+
+# Use letters 'a', 'b', ... or digits '1', '2', ... for different
+# affiliations and addresses. Use '~' or '""' to suppress the
+# display of the affiliation and address.
+author:
+  - name: 470408957 | 490443251 | 
+
+# Optional: line of arbitrary text with additional information.
+# Could be used, for example, to mention the bibliographic info in a post-print.
+# If not specified, defaults to "This version was compiled on \today"
+#date_subtitle: Published in *Journal of Statistical Software*, 2018
+
+# For footer text  TODO(fold into template, allow free form two-authors)
+
+# Place DOI URL or CRAN Package URL here
+doi_footer: 
+
+# Abstract
+abstract: |
+  In this project we investigated two predictive models for the predicitng the number of rings in an abalone which is used to find the age by adding 1.5 to the number. In order for our models to satisfy the linearity assumptions we had to perform transformations on the data set, where we then could conduct multiple linear regression through backward and forward selection using Akaike Information Criterion (AIC). The resulting model selection was further manipulated as there was strong observed collinearity with some independant variables which led to our final model. 
+
+# Optional: One or more keywords
+#keywords:
+#  - pdf
+#  - vignette
+
+# Paper size for the document, values of letter and a4
+papersize: letter
+
+# Font size of the document, values of 9pt (default), 10pt, 11pt and 12pt
+fontsize: 9pt
+
+# Optional: Force one-column layout, default is two-column
+#one_column: true
+
+# Optional: Enables lineo mode, but only if one_column mode is also true
+#lineno: true
+
+# Optional: Enable one-sided layout, default is two-sided
+#one_sided: true
+
+# Optional: Enable section numbering, default is unnumbered
+numbersections: true
+
+# Optional: Specify the depth of section number, default is 5
+secnumdepth: 3
+
+# Optional: Bibliography 
+#bibliography: pinp
+
+# Optional: include-after
+#include-after: somefile.tex
+
+# Optional: Skip inserting final break between acknowledgements, default is false
+skip_final_break: false
+
+# Customize footer, eg by referencing the vignette
+footer_contents: "pinp Vignette"
+
+# Optional: Enable a 'Draft' watermark on the document
+#watermark: true
+
+# Produce a pinp document
+# 
+# Other options that can be set here, shown with their defaults
+#   keep_tex: TRUE
+#   collapse: FALSE
+#   citation_package: natbib
+#
+# Any other arguments to rmarkdown::pdf_document could be set 
+# here as well
+#
+output:
+  pinp::pinp:
+    includes:
+      after_body: bib.tex
+
+# Required: Vignette metadata for inclusion in a package.
+vignette: >
+  %\VignetteIndexEntry{Introduction to pinp}
+  %\VignetteKeywords{pinp,vignette}
+  %\VignettePackage{pinp}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+```{r setup, include=FALSE, echo = FALSE, include = FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE)
+# install.packages("qtlcharts")
+# install.packages("corrplot")
+# install.packages("GGally")
+# install.packages("ggfortify")
+# install.packages("caret")
+# install.packages("sjPlot")
+library(tidyverse)
+library(qtlcharts)
+library(corrplot)
+library(GGally)
+library(ggfortify)
+library(caret)
+library(sjPlot)
+
+cols = c("sex",	
+             "length",
+             "diam",
+             "height",
+             "weight_whole",
+             "weight_shucked",
+             "weight_viscera",
+             "weight_shell",
+             "rings")
+
+raw_data = readr::read_csv("../Data/abalone.data", cols)
+
+unfiltered = raw_data %>% mutate(sex = factor(sex, c("M", "F", "I")),
+                       rings = as.integer(rings))
+
+data = raw_data %>% mutate(sex = factor(sex, c("M", "F", "I")),
+                       rings = as.integer(rings)) %>%
+filter(height < 0.5)
+
+
+```
+# Introduction 
+
+The orginal article for this data set was utilised to explore the age of an abalone. However, the classical method for determining age is to cut the shell, stain it, and count the number of rings under a microscope. This is a very tedious process, which provides reasoning to encompass easier ways in calculating the number of rings without manually counting the rings. We therefore aim to construct a regression model that can predict the number of rings an abalone has (calculating the age), using only an abalones physical attributes which are easily and quickly measured. To do so, linear relationships need to be considered between the variables and the value they aim to predict.
+
+# Data Set
+This biological study looks at abalones which are a common type of sea snail, where the majority of abalone species are found in cold waters, such as off the coasts of New Zealand, South Africa, Australia, and Tasmania. The data set is provided by the University of California Irvine Machine Learning Repository which explores variables describing physical characteristics for abalones. The original data was collected by Marine Resources Division in Taroona, Tasmania, containing 4177 observations with 9 different variables which has no missing values. 
+
+## 2.1 Variables
+
+\begin{itemize}
+	 \item[$-$] Sex; factor; male, female or infant
+	 \item[$-$] Length (mm); continous; longest shell measurement
+	 \item[$-$] Diameter (mm); continous; perpendicular to length
+	 \item[$-$] Height (mm); continous; with meat in shell
+	 \item[$-$] Whole Weight (g); continous; whole abalone
+	 \item[$-$] Shucked Weight (g); continous; weight of meat
+	 \item[$-$] Viscera Weight (g); continous; gut weight (after bleeding)
+	 \item[$-$] Shell Weight (g); continous; after being dried
+	 \item[$-$] Rings; integer; number of rings. +1.5 gives age in years
+\end{itemize}
+
+    
+## 2.2 Outliers
+
+In exploring the different variables there appeared to be two values identified as clear outliers in the height variable. Thus, concluding  they are likely to be errors induced when entering the data and will be filtered out. 
+
+```{r, echo=FALSE}
+ggplot(unfiltered) + aes(height) + geom_boxplot(color = "#00AFBB")
+```
+
+# Analysis 
+
+## 3.1 Transformations
+
+Prior to selecting an appropriate model, with reference to appendix 1, clearly the indepedant variables do not possess a linear relationship with number of rings. The variables clearly rise rapidly and reach a plateau, thus it was found best to perform log transformations of the variable rings, length, diameter, weight shucked, weight viscera, weight shell and a square root transformation was applied to height and log of rings. With reference to appendix 2, the data set now adopts a linear relationship with the predictive variable, allowing for a linear regressive model to work appropiately. 
+
+```{r, echo=FALSE, include = FALSE}
+res = model.matrix(~sex, data)
+
+numericised_sex = select(data, -sex)
+numericised_sex$sex_f = res[,2]
+numericised_sex$sex_i = res[,3]
+
+transformed = numericised_sex %>% mutate(log_whole = log(weight_whole),
+                log_shucked = log(weight_shucked),
+                log_viscera = log(weight_viscera),
+                log_shell = log(weight_shell),
+                log_diam = log(diam),
+                log_length = log(length),
+                sqrt_height = sqrt(height),
+                sqrt_log_rings = sqrt(log(rings))) %>%
+              select(log_whole,
+                log_shucked,
+                log_viscera,
+                log_shell,
+                log_diam,
+                log_length,
+                sqrt_height,
+                sex_f,
+                sex_i,
+                sqrt_log_rings)
+```
+
+## 3.2 Model Selection
+
+Provided the linearity assumptions with respect to the dependant variable are satisfied, a model search was justfiied by the Akaike information criterion through a backward and forward variable seleciton. After conducting the relevant seacrch it was found that the forward model did not include log of diameter and log of length while the backward approach included all variables, shown in the table below. 
+
+```{r, echo= FALSE, include = FALSE}
+M1 = lm(sqrt_log_rings ~ ., transformed)
+# M1
+# drop1(M1, test = "F")
+
+step.back.aic = step(M1, direction = "backward", trace = FALSE)
+# summary(step.back.aic)
+
+M2 = lm(sqrt_log_rings ~ 1, transformed)
+
+step.fwd.aic = step(M2, scope=list(lower=M2, upper=M1), direction = "forward",trace = FALSE)
+
+# summary(step.fwd.aic)
+
+sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Forward model","Backward model"), CSS = list(css.tdata = "padding:2px;text-align:left;vertical-align:top;"))
+# cat(tab$page.style)
+```
+## 3.3 Assumption Checking 
+
+### Forward Residual Verse Fitted/QQ Plot
+```{r, warning = FALSE, echo = FALSE}
+# autoplot(step.fwd.aic,which=1)
+x = transformed
+x = x %>% mutate(lfitted = step.fwd.aic$fitted.values, lresid = step.fwd.aic$residuals )
+ggplot(x, aes(x = lfitted ,y = lresid)) + geom_point(size = 1) +geom_smooth() +
+  labs(title="Residuals vs Fitted", x = "Fitted", y = "Residuals")
+```
+
+```{r, warning = FALSE, echo = FALSE}
+qqnorm(step.fwd.aic$residuals)
+qqline(step.fwd.aic$residuals)
+```
+
+### Backward Residual Verse Fitted/QQ Plot
+
+```{r, warning = FALSE, echo = FALSE}
+# autoplot(step.fwd.aic,which=1)
+x = transformed
+x = x %>% mutate(lfitted = step.back.aic$fitted.values, lresid = step.back.aic$residuals )
+ggplot(x, aes(x = lfitted ,y = lresid)) + geom_point(size = 1) +geom_smooth() +
+  labs(title="Residuals vs Fitted", x = "Fitted", y = "Residuals")
+
+```
+
+```{r, warning = FALSE, echo = FALSE}
+# autoplot(step.fwd.aic,which=2)
+qqnorm(step.back.aic$residuals)
+qqline(step.back.aic$residuals)
+```
+
+Assumption checks for both forward and backward models;
+
+\begin{itemize}
+	 \item[$-$] \textbf{Linearity}: The residual vs fitted values plot indicates no obvious curvature for both thus the linearity assumption is satisfied.
+	 \item[$-$] \textbf{Independence}: Referencing to appendix 3 the data was collected over 5 different regions in the Tasman Sea, hence there will be independence between the observations from the differing locations that the data was pulled from.
+	 \item[$-$] \textbf{Homoskedasticity}: The residuals do not appear to be fanning out or changing over the range of the fitted values for both, thus the constant error variance assumption is met.
+	 \item[$-$] \textbf{Normality}: The normality assumption is at least approximately satisfied. In the QQ plot, the points are reasonably close to the diagonal line, however the sample size is large enough to rely upon the central limit theorem ensuring the inferences are approximately valid.
+\end{itemize}
+
+
+# Results 
+
+They had the same adjusted R^2 thus we need to encompass the RMSE and MAE to identify the better performing model. Cross validation was used to compute RMSE and MAE of our forward and backward models. This is done to account for and minimise overfitting.  From comparing the two models’ RMSE and MAE we could see that they only differ very slightly, indicating the better performing model will be the backward model over the forward model, due to having a lower RMSE and MAE. 
+
+Talk about Given the strong multicollinearity observed between some variables it is good to note the multicollinearity among some variables, does it make sense to include all the weight variables in the model? There is no mention of the observed collinearity and its effect on the model.
+
+# Discussion/Conclusion
+
+All standard LaTeX environment are directly usable if needed,
+including of course all mathematical environments and symbols such as,
+say, the greek lettering: $\alpha$, $\beta$, $\gamma$, and so on.
+
+
+
+
+<!-- Acknowledgements, and References, are automatically typeset after this -->
+
+
+
+
+
+
