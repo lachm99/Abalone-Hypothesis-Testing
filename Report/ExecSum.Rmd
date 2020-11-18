@@ -266,12 +266,6 @@ gridExtra::grid.arrange(back_plot1, back_plot2, ncol=2)
 
 Assumption checks for both forward and backward models;
 
-\begin{figure}[!h]
-    \begin{center}
-    \includegraphics[width=0.3\textwidth, height=1.8in]{Independence} 
-    \end{center}
-\end{figure}
-
 \begin{itemize}
 	 \item[$-$] \textbf{Linearity}: The residual vs fitted values plot indicates no obvious curvature for both thus the linearity assumption is satisfied.
 	 \item[$-$] \textbf{Independence}: Referencing to appendix 3 the data was collected over 5 different regions in the Tasman Sea, hence there will be independence between the observations from the differing locations that the data was pulled from.
@@ -332,6 +326,13 @@ including of course all mathematical environments and symbols such as,
 say, the greek lettering: $\alpha$, $\beta$, $\gamma$, and so on.
 
 
+# Appendix
+
+\begin{figure}[!h]
+    \begin{center}
+    \includegraphics[width=0.3\textwidth, height=1.8in]{Independence} 
+    \end{center}
+\end{figure}
 
 
 <!-- Acknowledgements, and References, are automatically typeset after this -->

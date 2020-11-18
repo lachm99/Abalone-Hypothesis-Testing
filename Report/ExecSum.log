@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.18)  18 NOV 2020 22:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.11.18)  18 NOV 2020 22:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1466,7 +1466,7 @@ LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
 (hyperref)                be the same. Added a new anchor on input line 93.
 
-<ExecSum_files/figure-latex/unnamed-chunk-1-1.pdf, id=51, 206.7725pt x 64.24pt>
+<ExecSum_files/figure-latex/unnamed-chunk-1-1.pdf, id=55, 206.7725pt x 64.24pt>
 
 File: ExecSum_files/figure-latex/unnamed-chunk-1-1.pdf Graphic file (type pdf)
 <use ExecSum_files/figure-latex/unnamed-chunk-1-1.pdf>
@@ -1538,7 +1538,7 @@ LaTeX Font Info:    Font shape `T1/phv/b/sl' will be
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
 (hyperref)                be the same. Added a new anchor on input line 164.
 
-<ExecSum_files/figure-latex/unnamed-chunk-4-1.pdf, id=52, 207.77625pt x 111.416
+<ExecSum_files/figure-latex/unnamed-chunk-4-1.pdf, id=56, 207.77625pt x 111.416
 24pt>
 File: ExecSum_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type pdf)
 <use ExecSum_files/figure-latex/unnamed-chunk-4-1.pdf>
@@ -1554,45 +1554,45 @@ LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 
 
  <./ExecSum_files/figure-latex/unnamed-chunk-1-1.pdf>]
-<ExecSum_files/figure-latex/unnamed-chunk-5-1.pdf, id=77, 207.77625pt x 111.416
+<ExecSum_files/figure-latex/unnamed-chunk-5-1.pdf, id=81, 207.77625pt x 111.416
 24pt>
 File: ExecSum_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (type pdf)
 <use ExecSum_files/figure-latex/unnamed-chunk-5-1.pdf>
 Package pdftex.def Info: ExecSum_files/figure-latex/unnamed-chunk-5-1.pdf  used
  on input line 171.
 (pdftex.def)             Requested size: 207.77573pt x 111.41597pt.
-<Independence.png, id=78, 497.86pt x 544.0325pt>
-File: Independence.png Graphic file (type png)
-<use Independence.png>
-Package pdftex.def Info: Independence.png  used on input line 177.
-(pdftex.def)             Requested size: 151.71413pt x 130.08899pt.
 LaTeX Font Info:    Font shape `T1/mdbch/b/n' will be
-(Font)              scaled to size 8.64006pt on input line 182.
-<ExecSum_files/figure-latex/unnamed-chunk-8-1.pdf, id=80, 199.74625pt x 79.2962
+(Font)              scaled to size 8.64006pt on input line 176.
+<ExecSum_files/figure-latex/unnamed-chunk-8-1.pdf, id=82, 199.74625pt x 79.2962
 5pt>
 File: ExecSum_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (type pdf)
 <use ExecSum_files/figure-latex/unnamed-chunk-8-1.pdf>
 Package pdftex.def Info: ExecSum_files/figure-latex/unnamed-chunk-8-1.pdf  used
- on input line 198.
+ on input line 192.
 (pdftex.def)             Requested size: 199.74576pt x 79.29604pt.
+<Independence.png, id=83, 497.86pt x 544.0325pt>
+File: Independence.png Graphic file (type png)
+<use Independence.png>
+Package pdftex.def Info: Independence.png  used on input line 210.
+(pdftex.def)             Requested size: 151.71413pt x 130.08899pt.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 237.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 239.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 7.06396pt on input line 237.
+(Font)              scaled to size 7.06396pt on input line 239.
 LaTeX Font Info:    Font shape `OT1/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 239.
+(Font)              scaled to size 7.68005pt on input line 241.
 LaTeX Font Info:    Font shape `OML/mdbch/m/it' will be
-(Font)              scaled to size 7.68005pt on input line 239.
+(Font)              scaled to size 7.68005pt on input line 241.
 LaTeX Font Info:    Font shape `OMS/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 239.
+(Font)              scaled to size 7.68005pt on input line 241.
 LaTeX Font Info:    Font shape `OMX/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 239.
+(Font)              scaled to size 7.68005pt on input line 241.
 LaTeX Font Info:    Font shape `OML/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 239.
+(Font)              scaled to size 7.68005pt on input line 241.
 LaTeX Font Info:    Font shape `MDA/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 239.
+(Font)              scaled to size 7.68005pt on input line 241.
 LaTeX Font Info:    Font shape `MDB/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 239.
+(Font)              scaled to size 7.68005pt on input line 241.
 
 AED: lastpage setting LastPage
 - LAST -
@@ -1601,22 +1601,22 @@ Left:675.94505pt/0.0pt
 Right:675.94505pt/0.0pt
 Output:675.94505pt
 [2 <./ExecSum_files/figure-latex/unnamed-chunk-4-1.pdf> <./ExecSum_files/figure
--latex/unnamed-chunk-5-1.pdf> <./Independence.png> <./ExecSum_files/figure-late
-x/unnamed-chunk-8-1.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 254.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 254.
+-latex/unnamed-chunk-5-1.pdf> <./ExecSum_files/figure-latex/unnamed-chunk-8-1.p
+df> <./Independence.png>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 256.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 256.
 (./ExecSum.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 254.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 254.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 256.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 256.
 Package rerunfilecheck Info: File `ExecSum.out' has not changed.
-(rerunfilecheck)             Checksum: 81EAB3ADF172E0707B642A4510620ED7;712.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 254.
+(rerunfilecheck)             Checksum: 73A98930FF07A5E5A6C482482837DB45;756.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 256.
  ) 
 Here is how much of TeX's memory you used:
- 27209 strings out of 480608
- 490224 string characters out of 5903629
- 807594 words of memory out of 5000000
- 42297 multiletter control sequences out of 15000+600000
+ 27212 strings out of 480608
+ 490254 string characters out of 5903629
+ 808625 words of memory out of 5000000
+ 42299 multiletter control sequences out of 15000+600000
  623582 words of font info for 231 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  68i,11n,64p,450b,501s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1634,10 +1634,10 @@ t/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2020/texmf-dist/fonts
 /type1/urw/helvetic/uhvbo8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1
 /urw/helvetic/uhvr8a.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/urw/he
 lvetic/uhvro8a.pfb>
-Output written on ExecSum.pdf (2 pages, 568179 bytes).
+Output written on ExecSum.pdf (2 pages, 568457 bytes).
 PDF statistics:
- 171 PDF objects out of 1000 (max. 8388607)
- 140 compressed objects within 2 object streams
- 15 named destinations out of 1000 (max. 500000)
- 40582 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 175 PDF objects out of 1000 (max. 8388607)
+ 144 compressed objects within 2 object streams
+ 16 named destinations out of 1000 (max. 500000)
+ 40590 words of extra memory for PDF output out of 42996 (max. 10000000)
 
