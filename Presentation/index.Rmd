@@ -187,30 +187,30 @@ qtlcharts::iplotCorr(transformed)
 
 ---
 
-.pull-left[## .brand-red[Initial, excluding `sex`]
-```{r}
-fn_data = function(data, mapping, ...) {
-  p = ggplot(data = data, mapping = mapping) +
-    geom_point(shape=".") +
-    geom_smooth(method=lm, fill = "red", color="red", se = FALSE)
-  p
-}
-GGally::ggpairs(data, columns = 1:9, lower = list(continuous = fn_data)) + theme_bw(base_size = 10)
-```
-]
+<!-- .pull-left[## .brand-red[Initial, excluding `sex`] -->
+<!-- ```{r} -->
+<!-- fn_data = function(data, mapping, ...) { -->
+<!--   p = ggplot(data = data, mapping = mapping) + -->
+<!--     geom_point(shape=".") + -->
+<!--     geom_smooth(method=lm, fill = "red", color="red", se = FALSE) -->
+<!--   p -->
+<!-- } -->
+<!-- GGally::ggpairs(data, columns = 1:9, lower = list(continuous = fn_data)) + theme_bw(base_size = 10) -->
+<!-- ``` -->
+<!-- ] -->
 
-.pull-right[## .brand-red[Transformed, including `sex`]
-```{r, warning = FALSE}
-fn_data = function(data, mapping, ...) {
-  p = ggplot(data = transformed, mapping = mapping) +
-    geom_point(shape=".") +
-    geom_smooth(method=lm, fill = "red", color="red", se = FALSE)
-  p
-}
-GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data)) + theme_bw(base_size = 10)
-```
+<!-- .pull-right[## .brand-red[Transformed, including `sex`] -->
+<!-- ```{r, warning = FALSE} -->
+<!-- fn_data = function(data, mapping, ...) { -->
+<!--   p = ggplot(data = transformed, mapping = mapping) + -->
+<!--     geom_point(shape=".") + -->
+<!--     geom_smooth(method=lm, fill = "red", color="red", se = FALSE) -->
+<!--   p -->
+<!-- } -->
+<!-- GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data)) + theme_bw(base_size = 10) -->
+<!-- ``` -->
 
-]
+<!-- ] -->
 
 .footnote[Figure 4 and Figure 5: Examination of data outputs before and after transformation]
 
@@ -299,6 +299,11 @@ qqline(step.back.aic$residuals)
 ---
 
 ## Comparing RMSE and MAE
+
+```{r}
+MFInal = lm(sqrt_log_rings ~ . - log_viscera- log_shell - sex_f,transformed)
+summary(MFInal)
+```
 
 
 ```{r, warning = FALSE}

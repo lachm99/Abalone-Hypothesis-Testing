@@ -66,7 +66,8 @@ final model.
 % If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
 
 
-\section{Introduction}\label{introduction}
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
 
 The orginal article for this data set was utilised to explore the age of
 an abalone. However, the classical method for determining age is to cut
@@ -79,7 +80,8 @@ only an abalones physical attributes which are easily and quickly
 measured. To do so, linear relationships need to be considered between
 the variables and the value they aim to predict.
 
-\section{Data Set}\label{data-set}
+\hypertarget{data-set}{%
+\section{Data Set}\label{data-set}}
 
 This biological study looks at abalones which are a common type of sea
 snail, where the majority of abalone species are found in cold waters,
@@ -90,7 +92,8 @@ physical characteristics for abalones. The original data was collected
 by Marine Resources Division in Taroona, Tasmania, containing 4177
 observations with 9 different variables which has no missing values.
 
-\subsection{2.1 Variables}\label{variables}
+\hypertarget{variables}{%
+\subsection{2.1 Variables}\label{variables}}
 
 \begin{itemize}
      \item[$-$] Sex; factor; male, female or infant
@@ -104,7 +107,8 @@ observations with 9 different variables which has no missing values.
      \item[$-$] Rings; integer; number of rings. +1.5 gives age in years
 \end{itemize}
 
-\subsection{2.2 Outliers}\label{outliers}
+\hypertarget{outliers}{%
+\subsection{2.2 Outliers}\label{outliers}}
 
 In exploring the different variables there appeared to be two values
 identified as clear outliers in the height variable. Thus, concluding
@@ -113,9 +117,11 @@ filtered out.
 
 \begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-1-1} \end{center}
 
-\section{Analysis}\label{analysis}
+\hypertarget{analysis}{%
+\section{Analysis}\label{analysis}}
 
-\subsection{3.1 Transformations}\label{transformations}
+\hypertarget{transformations}{%
+\subsection{3.1 Transformations}\label{transformations}}
 
 Prior to selecting an appropriate model, with reference to appendix 1,
 clearly the indepedant variables do not possess a linear relationship
@@ -127,7 +133,8 @@ rings. With reference to appendix 2, the data set now adopts a linear
 relationship with the predictive variable, allowing for a linear
 regressive model to work appropiately.
 
-\subsection{3.2 Model Selection}\label{model-selection}
+\hypertarget{model-selection}{%
+\subsection{3.2 Model Selection}\label{model-selection}}
 
 Provided the linearity assumptions with respect to the dependant
 variable are satisfied, a model search was justfiied by the Akaike
@@ -158,15 +165,18 @@ backward approach included all variables, shown in the table below.
 \end{tabular}
 \end{center}
 
-\subsection{3.3 Assumption Checking}\label{assumption-checking}
+\hypertarget{assumption-checking}{%
+\subsection{3.3 Assumption Checking}\label{assumption-checking}}
 
+\hypertarget{forward-residual-verse-fittedqq-plot}{%
 \subsubsection{Forward Residual Verse Fitted/QQ
-Plot}\label{forward-residual-verse-fittedqq-plot}
+Plot}\label{forward-residual-verse-fittedqq-plot}}
 
 \begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-4-1} \end{center}
 
+\hypertarget{backward-residual-verse-fittedqq-plot}{%
 \subsubsection{Backward Residual Verse Fitted/QQ
-Plot}\label{backward-residual-verse-fittedqq-plot}
+Plot}\label{backward-residual-verse-fittedqq-plot}}
 
 \begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-5-1} \end{center}
 
@@ -179,31 +189,48 @@ Assumption checks for both forward and backward models;
      \item[$-$] \textbf{Normality}: The normality assumption is at least approximately satisfied. In the QQ plot, the points are reasonably close to the diagonal line, however the sample size is large enough to rely upon the central limit theorem ensuring the inferences are approximately valid.
 \end{itemize}
 
-\section{Results}\label{results}
+\hypertarget{results}{%
+\section{Results}\label{results}}
 
-They had the same adjusted R\^{}2 thus we need to encompass the RMSE and
-MAE to identify the better performing model. Cross validation was used
-to compute RMSE and MAE of our forward and backward models. This is done
-to account for and minimise overfitting. From comparing the two models'
-RMSE and MAE we could see that they only differ very slightly,
-indicating the better performing model will be the backward model over
-the forward model, due to having a lower RMSE and MAE.
+Provided both the Forward and Backward approach resulted in the same
+adjusted \(R^2\), the RMSE and MAE were computed to justify which model
+was the better approach, shown in the graph below.
 
 \begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-8-1} \end{center}
 
-Talk about Given the strong multicollinearity observed between some
-variables it is good to note the multicollinearity among some variables,
-does it make sense to include all the weight variables in the model?
-There is no mention of the observed collinearity and its effect on the
-model.
+Thus, it is clearly seen that the Backward model is the better approach
+as it has a lower Residual Mean Square Error and Mean Absolute Error,
+however referring to appendix 4 there appears to be significant
+multicollinearity within the dataset which may reduce the precision of
+the estimate coefficients, lessening the statistical power. This was
+expected as living organisms tend to grow with age, hence the weight and
+height will all grow at a rapid rate til it eventually slows down at a
+certain point in the life. Additionally, the p values for the model all
+are statisically significant except the sex factor where p-value of
+sex\_f not providing enough evidence to reject the null hypothesis that
+coefficient is equal to zero, interpreting as to whether the abalone is
+adult or infant. Furthemore, with strong multicollinearity within the
+data set and all the variables are statistically significant the optimal
+solution was to remove some of the highly correlated independent
+variables of weight. It was found that the two more significant weight
+variables were shucked weight and whole weight, thus the other two were
+removed which led us to our final model as follows;
 
-\section{Discussion/Conclusion}\label{discussionconclusion}
+\(\widehat{\sqrt{log(rings)}} = 1.330 + 0.297 log(whole) -0.243 log(shucked) + 0.153 log(diameter) -0.079 log(length) + 0.205\sqrt{height} -0.013 Sex_{infant}\)
+
+To answer our question we can say that our model can predict the square
+root log of the number of rings with 62.8\% explainable variance using
+all the provided variables, making for a respectable regressive model.
+
+\hypertarget{discussionconclusion}{%
+\section{Discussion/Conclusion}\label{discussionconclusion}}
 
 All standard LaTeX environment are directly usable if needed, including
 of course all mathematical environments and symbols such as, say, the
 greek lettering: \(\alpha\), \(\beta\), \(\gamma\), and so on.
 
-\section{Appendix}\label{appendix}
+\hypertarget{appendix}{%
+\section{Appendix}\label{appendix}}
 
 \begin{figure}[!h]
     \begin{center}
