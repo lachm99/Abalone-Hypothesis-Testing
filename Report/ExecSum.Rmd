@@ -255,11 +255,8 @@ They had the same adjusted R^2 thus we need to encompass the RMSE and MAE to ide
 Talk about Given the strong multicollinearity observed between some variables it is good to note the multicollinearity among some variables, does it make sense to include all the weight variables in the model? There is no mention of the observed collinearity and its effect on the model.
 
 # Discussion/Conclusion
-
-All standard LaTeX environment are directly usable if needed,
-including of course all mathematical environments and symbols such as,
-say, the greek lettering: $\alpha$, $\beta$, $\gamma$, and so on.
-
+Conducting this analysis was fruitful. Our results demonstrate that we can indeed construct a model that will approximate an Abalone's age without needing any arduous ring-counting. Such a tool is very useful for monitoring large marine ecosystems, where there are potentially thousands of observations needing classification and not enough time to exactly calculate the age of each Abalone.  
+However, this also exposes one limitation of the data. Our data only pertains to _Haliotis_ _Rubra_, and so we cannot claim that our model accounts for species, or will even perform generally among Haliotes.
 
 
 
