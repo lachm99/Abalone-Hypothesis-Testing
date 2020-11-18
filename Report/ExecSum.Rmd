@@ -147,8 +147,8 @@ This biological study looks at abalones which are a common type of sea snail, wh
 
 In exploring the different variables there appeared to be two values identified as clear outliers in the height variable. Thus, concluding  they are likely to be errors induced when entering the data and will be filtered out. 
 
-```{r, echo=FALSE}
-ggplot(unfiltered) + aes(height) + geom_boxplot(color = "#00AFBB")
+```{r, echo=FALSE, fig.width=3, fig.height=1, cache=TRUE}
+ggplot(unfiltered) + aes(x = height) + geom_boxplot(color = "#00AFBB") + theme(text=element_text(size=9))
 ```
 
 # Analysis 
@@ -188,7 +188,9 @@ transformed = numericised_sex %>% mutate(log_whole = log(weight_whole),
 
 Provided the linearity assumptions with respect to the dependant variable are satisfied, a model search was justfiied by the Akaike information criterion through a backward and forward variable seleciton. After conducting the relevant seacrch it was found that the forward model did not include log of diameter and log of length while the backward approach included all variables, shown in the table below. 
 
-```{r, echo= FALSE, include = FALSE}
+```{r, echo= FALSE, include=FALSE, warning = FALSE, fig.width=10, fig.height=5, cache=TRUE}
+library(magrittr)
+library(knitr)
 M1 = lm(sqrt_log_rings ~ ., transformed)
 # M1
 # drop1(M1, test = "F")
@@ -205,37 +207,60 @@ step.fwd.aic = step(M2, scope=list(lower=M2, upper=M1), direction = "forward",tr
 sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,dv.labels = c("Forward model","Backward model"), CSS = list(css.tdata = "padding:2px;text-align:left;vertical-align:top;"))
 # cat(tab$page.style)
 ```
+
+\begin{center}
+\begin{tabular}{c c c c c}
+    & Forward Model & & Backward Model & \\
+    \hline
+    Predictors & Estimates & p & Estimates & p\\
+    \hline
+    (Intercept) & 1.43 & $\textbf{<0.001}$ & 1.45 & $\textbf{<0.001}$\\
+    log shell & 0.11 & $\textbf{<0.001}$ & 0.11 & $\textbf{<0.001}$\\
+    logshucked & -0.19 & $\textbf{<0.001}$ & -0.19 & $\textbf{<0.001}$\\
+    logwhole & 0.19 & $\textbf{<0.001}$ & 0.20 & $\textbf{<0.001}$\\
+    sexi & -0.02 & $\textbf{<0.001}$ & -0.01 & $\textbf{<0.001}$\\
+    logviscera & -0.03 & $\textbf{<0.001}$ & -0.02 & $\textbf{<0.001}$\\
+    sqrtheight & 0.13 & $\textbf{0.007}$ & 0.12 & $\textbf{0.012}$\\
+    logdiam &  & & 0.07 & $\textbf{0.005}$\\
+     loglength &  & & -0.08 & $\textbf{0.005}$\\
+    \hline
+    Observations & 4175 &  & 1.45 & \\
+    $R^2/R^2$ adjusted & 0.647 / 0.647 & & 0.648 / 0.647 & \\
+    AIC & -10882.310 & & -10887.886 & \\
+\end{tabular}
+\end{center}
+
 ## 3.3 Assumption Checking 
 
 ### Forward Residual Verse Fitted/QQ Plot
-```{r, warning = FALSE, echo = FALSE}
+```{r, warning = FALSE, echo = FALSE, fig.width=3, fig.height=1.7, cache=TRUE}
 # autoplot(step.fwd.aic,which=1)
 x = transformed
 x = x %>% mutate(lfitted = step.fwd.aic$fitted.values, lresid = step.fwd.aic$residuals )
-ggplot(x, aes(x = lfitted ,y = lresid)) + geom_point(size = 1) +geom_smooth() +
-  labs(title="Residuals vs Fitted", x = "Fitted", y = "Residuals")
-```
+forward_plot1 = ggplot(x, aes(x = lfitted ,y = lresid)) + geom_jitter(size=0.1, alpha=0.5, col="black", shape=".") + geom_smooth(size=0.5) +
+  labs(x = "Fitted", y = "Residuals") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
 
-```{r, warning = FALSE, echo = FALSE}
-qqnorm(step.fwd.aic$residuals)
-qqline(step.fwd.aic$residuals)
+# qqnorm(step.fwd.aic$residuals)
+# qqline(step.fwd.aic$residuals)
+forward_plot2 = ggplot(step.fwd.aic, aes(sample = step.fwd.aic$residuals)) + stat_qq(alpha=0.5, size=0.5, shape=1) + stat_qq_line(colour="blue") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
+
+gridExtra::grid.arrange(forward_plot1, forward_plot2, ncol=2)
 ```
 
 ### Backward Residual Verse Fitted/QQ Plot
-
-```{r, warning = FALSE, echo = FALSE}
+```{r, warning = FALSE, echo = FALSE, fig.width=3, fig.height=1.7, cache=TRUE}
 # autoplot(step.fwd.aic,which=1)
 x = transformed
 x = x %>% mutate(lfitted = step.back.aic$fitted.values, lresid = step.back.aic$residuals )
-ggplot(x, aes(x = lfitted ,y = lresid)) + geom_point(size = 1) +geom_smooth() +
-  labs(title="Residuals vs Fitted", x = "Fitted", y = "Residuals")
+back_plot1 = ggplot(x, aes(x = lfitted ,y = lresid)) + geom_jitter(size=0.1, alpha=0.5, col="black", shape=".") + geom_smooth(size=0.5) +
+  labs(x = "Fitted", y = "Residuals") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
 
-```
-
-```{r, warning = FALSE, echo = FALSE}
 # autoplot(step.fwd.aic,which=2)
-qqnorm(step.back.aic$residuals)
-qqline(step.back.aic$residuals)
+back_plot2 = ggplot(step.back.aic, aes(sample = step.back.aic$residuals)) + stat_qq(alpha=0.5, size=0.5, shape=1) + stat_qq_line(colour="blue") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
+# qqnorm(step.back.aic$residuals)
+# qqline(step.back.aic$residuals)
+
+gridExtra::grid.arrange(back_plot1, back_plot2, ncol=2)
 ```
 
 Assumption checks for both forward and backward models;
@@ -252,6 +277,45 @@ Assumption checks for both forward and backward models;
 
 They had the same adjusted R^2 thus we need to encompass the RMSE and MAE to identify the better performing model. Cross validation was used to compute RMSE and MAE of our forward and backward models. This is done to account for and minimise overfitting.  From comparing the two models’ RMSE and MAE we could see that they only differ very slightly, indicating the better performing model will be the backward model over the forward model, due to having a lower RMSE and MAE. 
 
+```{r, warning = FALSE}
+set.seed(1)
+cv_forward= train(
+    sqrt_log_rings ~ . - log_diam - log_length - sex_f,
+    transformed,
+    method = "lm",
+    trtControl = trainControl(
+        method = "cv", number = 10,
+        verboseIter = FALSE
+    )
+)
+
+# cv_forward
+```
+
+```{r, warning = FALSE}
+cv_back= train(
+    sqrt_log_rings ~ . -sex_f,
+    transformed,
+    method = "lm",
+    trtControl = trainControl(
+        method = "cv", number = 10,
+        verboseIter = FALSE
+    )
+)
+
+# cv_back
+```
+
+```{r, fig.width=3, fig.height=1.25, cache=TRUE}
+results = resamples(list(forward = cv_forward,
+                         back = cv_back))
+plot1 = ggplot(results, metric = "RMSE") +  labs(y = "RMSE") + theme(text=element_text(size=5))
+
+plot2 = ggplot(results, metric = "MAE") + labs(y = "MAE")+ theme(text=element_text(size=5))
+
+gridExtra::grid.arrange(plot1, plot2, ncol=2)
+```
+
 Talk about Given the strong multicollinearity observed between some variables it is good to note the multicollinearity among some variables, does it make sense to include all the weight variables in the model? There is no mention of the observed collinearity and its effect on the model.
 
 # Discussion/Conclusion
@@ -261,6 +325,13 @@ including of course all mathematical environments and symbols such as,
 say, the greek lettering: $\alpha$, $\beta$, $\gamma$, and so on.
 
 
+# Appendix
+
+\begin{figure}[!h]
+    \begin{center}
+    \includegraphics[width=0.3\textwidth, height=1.8in]{Independence} 
+    \end{center}
+\end{figure}
 
 
 <!-- Acknowledgements, and References, are automatically typeset after this -->
