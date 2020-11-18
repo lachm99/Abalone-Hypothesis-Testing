@@ -20,28 +20,29 @@
 
 
 
-\title{A Template for Two or One-Column Vignettes}
+\title{An Abalone-Age Investigation}
 
-\author[a]{First Author}
-\author[a,b]{Second Author}
+\author[]{470408957 \textbar{} 490443251 \textbar{}}
 
-  \affil[a]{Institute of Smoke and Magic, University of Sometown, Sometown, XY,
-12345}
-  \affil[b]{Department of Neat Tricks, Whereever State University, Someplace, MC,
-67890}
 
-\setcounter{secnumdepth}{0}
+\setcounter{secnumdepth}{3}
 
 % Please give the surname of the lead author for the running footer
-\leadauthor{Author and Author}
+\leadauthor{}
 
 % Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
- \keywords{  one |  two |  optional |  keywords |  here  }  
+ 
 
 \begin{abstract}
-Your abstract will be typeset here, and used by default a visually
-distinctive font. An abstract should explain to the general reader the
-major contributions of the article.
+In this project we investigated two predictive models for the predicitng
+the number of rings in an abalone which is used to find the age by
+adding 1.5 to the number. In order for our models to satisfy the
+linearity assumptions we had to perform transformations on the data set,
+where we then could conduct multiple linear regression through backward
+and forward selection using Akaike Information Criterion (AIC). The
+resulting model selection was further manipulated as there was strong
+observed collinearity with some independant variables which led to our
+final model.
 \end{abstract}
 
 \dates{This version was compiled on \today} 
@@ -49,9 +50,8 @@ major contributions of the article.
 
 % initially we use doi so keep for backwards compatibility
 % new name is doi_footer
-\doifooter{\url{https://cran.r-project.org/package=YourPackage}}
 
-\pinpfootercontents{YourPackage Vignette}
+\pinpfootercontents{pinp Vignette}
 
 \begin{document}
 
@@ -65,221 +65,191 @@ major contributions of the article.
 
 % If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
 
-\acknow{This template package builds upon, and extends, the work of the
-excellent \href{https://cran.r-project.org/package=rticles}{rticles}
-package, and both packages rely on the
-\href{http://www.pnas.org/site/authors/latex.xhtml}{PNAS LaTeX} macros.
-Both these sources are gratefully acknowledged as this work would not
-have been possible without them. Our extensions are under the same
-respective licensing term
-(\href{https://www.gnu.org/licenses/gpl-3.0.en.html}{GPL-3} and
-\href{https://www.latex-project.org/lppl/}{LPPL (\textgreater{}= 1.3)}).}
 
-\hypertarget{introduction}{%
-\subsection{Introduction}\label{introduction}}
+\section{Introduction}\label{introduction}
 
-This \emph{pinp is not PNAS} template started when the introduction to
-\href{http://dirk.eddelbuettel.com/code/rcpp.html}{Rcpp} by
-\cite{PeerJ:Rcpp} was converted into this updated
-\href{https://eddelbuettel.github.io/pinp/Rcpp-introduction.pdf}{Rcpp
-Introduction} vignette. It is based on the
-\href{https://github.com/rstudio/rticles/tree/master/inst/rmarkdown/templates/pnas_article}{pnas\_article}
-template of the wonderful
-\href{https://cran.r-project.org/package=rticles}{rticles} package by
-\cite{CRAN:rticles}. The conversion from markdown to latex is
-facilitated by
-\href{https://cran.r-project.org/package=rmarkdown}{rmarkdown}
-\citep{CRAN:rmarkdown} and
-\href{https://cran.r-project.org/package=knitr}{knitr}
-\citep{CRAN:knitr}. The underlying LaTeX macros are from
-\href{http://www.pnas.org/site/authors/latex.xhtml}{pnas.org}.
+The orginal article for this data set was utilised to explore the age of
+an abalone. However, the classical method for determining age is to cut
+the shell, stain it, and count the number of rings under a microscope.
+This is a very tedious process, which provides reasoning to encompass
+easier ways in calculating the number of rings without manually counting
+the rings. We therefore aim to construct a regression model that can
+predict the number of rings an abalone has (calculating the age), using
+only an abalones physical attributes which are easily and quickly
+measured. To do so, linear relationships need to be considered between
+the variables and the value they aim to predict.
 
-The remainder of the document carries over from the corresponding
-\href{https://github.com/rstudio/rticles/tree/master/inst/rmarkdown/templates/pnas_article}{pnas\_article}
-template document. but has been edited and updated to our use case. A
-few specific tips follow. In general, for fine-tuning some knowledge of
-LaTeX is helpful.
+\section{Data Set}\label{data-set}
 
-\hypertarget{author-affiliations}{%
-\subsection{Author Affiliations}\label{author-affiliations}}
+This biological study looks at abalones which are a common type of sea
+snail, where the majority of abalone species are found in cold waters,
+such as off the coasts of New Zealand, South Africa, Australia, and
+Tasmania. The data set is provided by the University of California
+Irvine Machine Learning Repository which explores variables describing
+physical characteristics for abalones. The original data was collected
+by Marine Resources Division in Taroona, Tasmania, containing 4177
+observations with 9 different variables which has no missing values.
 
-Per common academic best practice, you can include your department,
-institution, and complete address, with the ZIP/postal code, for each
-author. Use lower case letters to match authors with institutions, as
-shown in the example. Authors with an ORCID ID may supply this
-information at submission.
-
-\hypertarget{document-options}{%
-\subsection{Document Options}\label{document-options}}
-
-We support several options via the YAML header
+\subsection{2.1 Variables}\label{variables}
 
 \begin{itemize}
-\tightlist
-\item
-  Setting a DOI or URL footer, for example for the CRAN package URL,
-  which is placed in the bottom-left footer of the title page and even
-  pages;
-\item
-  Setting a footer label, for example \emph{YourPackage Vignette}
-  stating your package, which is placed in the bottom-right footer on
-  odd pages;
-\item
-  Setting a free-form author field used on the inside footer;
-\item
-  Optional \emph{Draft} watermark to be added to each page;
-\item
-  Line of custom text in subtitle (\texttt{date\_subtitle}) suitable to
-  give publication info of the draft, e.g.~journal name in a post-print;
-\item
-  Document date that appears in the footer can be specified manually
-  using \texttt{document\_date}.
+     \item[$-$] Sex; factor; male, female or infant
+     \item[$-$] Length (mm); continous; longest shell measurement
+     \item[$-$] Diameter (mm); continous; perpendicular to length
+     \item[$-$] Height (mm); continous; with meat in shell
+     \item[$-$] Whole Weight (g); continous; whole abalone
+     \item[$-$] Shucked Weight (g); continous; weight of meat
+     \item[$-$] Viscera Weight (g); continous; gut weight (after bleeding)
+     \item[$-$] Shell Weight (g); continous; after being dried
+     \item[$-$] Rings; integer; number of rings. +1.5 gives age in years
 \end{itemize}
 
-\hypertarget{references}{%
-\subsection{References}\label{references}}
+\subsection{2.2 Outliers}\label{outliers}
 
-Here we differ from PNAS and suggest natbib. References will appear in
-author-year form. Use \texttt{\textbackslash{}citet\{\}},
-\texttt{\textbackslash{}citep\{\}}, etc as usual.
+In exploring the different variables there appeared to be two values
+identified as clear outliers in the height variable. Thus, concluding
+they are likely to be errors induced when entering the data and will be
+filtered out.
 
-We default to the \texttt{jss.bst} style. To switch to a different
-bibliography style, please use \texttt{biblio-style:\ style} in the YAML
-header.
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-1-1} \end{center}
 
-\hypertarget{inline-r-code}{%
-\subsection{Inline R Code}\label{inline-r-code}}
+\section{Analysis}\label{analysis}
 
-The PNAS sample included a fixed PNG image here, but this document
-prefers to show the results and embedding of \emph{R} code.
+\subsection{3.1 Transformations}\label{transformations}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(ggplot2)}
-\KeywordTok{ggplot}\NormalTok{(mtcars, }\KeywordTok{aes}\NormalTok{(wt, mpg)) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{size=}\DecValTok{3}\NormalTok{, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{colour=}\KeywordTok{factor}\NormalTok{(cyl))) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+Prior to selecting an appropriate model, with reference to appendix 1,
+clearly the indepedant variables do not possess a linear relationship
+with number of rings. The variables clearly rise rapidly and reach a
+plateau, thus it was found best to perform log transformations of the
+variable rings, length, diameter, weight shucked, weight viscera, weight
+shell and a square root transformation was applied to height and log of
+rings. With reference to appendix 2, the data set now adopts a linear
+relationship with the predictive variable, allowing for a linear
+regressive model to work appropiately.
 
-\begin{figure}
+\subsection{3.2 Model Selection}\label{model-selection}
 
-{\centering \includegraphics{ExecSum_files/figure-latex/figex-1} 
+Provided the linearity assumptions with respect to the dependant
+variable are satisfied, a model search was justfiied by the Akaike
+information criterion through a backward and forward variable seleciton.
+After conducting the relevant seacrch it was found that the forward
+model did not include log of diameter and log of length while the
+backward approach included all variables, shown in the table below.
 
-}
+\begin{center}
+\begin{tabular}{c c c c c}
+    & Forward Model & & Backward Model & \\
+    \hline
+    Predictors & Estimates & p & Estimates & p\\
+    \hline
+    (Intercept) & 1.43 & **<0.001** & 1.45 & **<0.001**\\
+    logshell & 0.11 & **<0.001** & 0.11 & **<0.001**\\
+    logshucked & -0.19 & **<0.001** & -0.19 & **<0.001**\\
+    logwhole & 0.19 & **<0.001** & 0.20 & **<0.001**\\
+    sexi & -0.02 & **<0.001** & -0.01 & **<0.001**\\
+    logviscera & -0.03 & **<0.001** & -0.02 & **<0.001**\\
+    sqrtheight & 0.13 & **0.007** & 0.12 & **0.012**\\
+     &  & & 0.07 & **0.005**\\
+     &  & & -0.08 & **0.005**\\
+    \hline
+    Observations & 4175 &  & 1.45 & \\
+    $R^2/R^2$ adjusted & 0.647 / 0.647 & & 0.648 / 0.647 & \\
+    AIC & -10882.310 & & -10887.886 & 
+\end{tabular}
+\end{center}
 
-\caption{Narrow ggplot2 figure}\label{fig:figex}
-\end{figure}
+\subsection{3.3 Assumption Checking}\label{assumption-checking}
 
-Here we use a standard knitr bloc with explicit options for
+\subsubsection{Forward Residual Verse Fitted/QQ
+Plot}\label{forward-residual-verse-fittedqq-plot}
+
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-4-1} \end{center}
+
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-5-1} \end{center}
+
+\subsubsection{Backward Residual Verse Fitted/QQ
+Plot}\label{backward-residual-verse-fittedqq-plot}
+
+\begin{center}\includegraphics[width=0.5\linewidth]{ExecSum_files/figure-latex/unnamed-chunk-6-1} \end{center}
+
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-7-1} \end{center}
+
+Assumption checks for both forward and backward models;
 
 \begin{itemize}
-\tightlist
-\item
-  figure width and height (\texttt{fig.width}, \texttt{fig.height}),
-  both set to three inches;
-\item
-  whether the code is shown (\texttt{echo=TRUE}); and
-\item
-  the caption (\texttt{fig.cap}) as shown above.
+     \item[$-$] \textbf{Linearity}: The residual vs fitted values plot indicates no obvious curvature for both thus the linearity assumption is satisfied.
+     \item[$-$] \textbf{Independence}: Referencing to appendix 3 the data was collected over 5 different regions in the Tasman Sea, hence there will be independence between the observations from the differing locations that the data was pulled from.
+     \item[$-$] \textbf{Homoskedasticity}: The residuals do not appear to be fanning out or changing over the range of the fitted values for both, thus the constant error variance assumption is met.
+     \item[$-$] \textbf{Normality}: The normality assumption is at least approximately satisfied. In the QQ plot, the points are reasonably close to the diagonal line, however the sample size is large enough to rely upon the central limit theorem ensuring the inferences are approximately valid.
 \end{itemize}
 
-\hypertarget{digital-figures}{%
-\subsection{Digital Figures}\label{digital-figures}}
+\section{Results}\label{results}
 
-Markdown, Pandoc and LaTeX support \texttt{.eps} and \texttt{.pdf}
-files.
+They had the same adjusted R\^{}2 thus we need to encompass the RMSE and
+MAE to identify the better performing model. Cross validation was used
+to compute RMSE and MAE of our forward and backward models. This is done
+to account for and minimise overfitting. From comparing the two models'
+RMSE and MAE we could see that they only differ very slightly,
+indicating the better performing model will be the backward model over
+the forward model, due to having a lower RMSE and MAE.
 
-Figures and Tables should be labelled and referenced in the standard way
-using the \texttt{\textbackslash{}label\{\}} and
-\texttt{\textbackslash{}ref\{\}} commands.
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-10-1} \end{center}
 
-The R examples above show how to insert a column-wide figure. To insert
-a figure wider than one column, please use the
-\texttt{\textbackslash{}begin\{figure*\}...\textbackslash{}end\{figure*\}}
-environment.
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-11-1} \end{center}
 
-One (roundabout) way of doing this is to \emph{not} actually plot a
-figure, but to save it in a file as the following segment shows:
+Talk about Given the strong multicollinearity observed between some
+variables it is good to note the multicollinearity among some variables,
+does it make sense to include all the weight variables in the model?
+There is no mention of the observed collinearity and its effect on the
+model.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(ggplot2)}
-\NormalTok{p <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ midwest,}
-            \DataTypeTok{mapping =} \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ area,}
-                          \DataTypeTok{fill =}\NormalTok{ state,}
-                          \DataTypeTok{color =}\NormalTok{ state)) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{geom_density}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.3}\NormalTok{)}
-\CommentTok{## save to file}
-\KeywordTok{suppressMessages}\NormalTok{(}\KeywordTok{ggsave}\NormalTok{(}\StringTok{"densities.pdf"}\NormalTok{, p))}
-\end{Highlighting}
-\end{Shaded}
+\section{Discussion/Conclusion}\label{discussionconclusion}
 
-This file is then included via standard LaTeX commands.
-
-\begin{figure*}
-  \begin{center}
-    \includegraphics[width=0.66\textwidth, height=3.5in]{densities} 
-  \end{center}
-  \caption{Wide ggplot2 figure}\label{fig}
-\end{figure*}
-
-\hypertarget{typeset-code-but-do-not-run-it}{%
-\subsection{Typeset Code (But Do Not Run
-It)}\label{typeset-code-but-do-not-run-it}}
-
-We can also just show code.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{xx <-}\StringTok{ }\NormalTok{faithful[,}\StringTok{"eruptions"}\NormalTok{]}
-\NormalTok{fit <-}\StringTok{ }\KeywordTok{density}\NormalTok{(xx)}
-\KeywordTok{plot}\NormalTok{(fit)}
-\end{Highlighting}
-\end{Shaded}
-
-This simply used a pandoc bloc started and ended by three backticks,
-with \texttt{r} as the language choice. Similarly, \emph{many} other
-languages can be typeset directly simply by relying on pandoc.
-
-\hypertarget{single-column-equations}{%
-\subsection{Single column equations}\label{single-column-equations}}
-
-Authors may use 1- or 2-column equations in their article, according to
-their preference.
-
-To allow an equation to span both columns, options are to use the
-\texttt{\textbackslash{}begin\{figure*\}...\textbackslash{}end\{figure*\}}
-environment mentioned above for figures. The
-\texttt{\textbackslash{}begin\{widetext\}...\textbackslash{}end\{widetext\}}
-environment as shown in equation \ref{eqn:example} below is deprecated,
-but \LaTeX commands \texttt{\textbackslash{}onecolumn} and
-\texttt{\textbackslash{}twocolumn} work fine.
-
-Please note that this option may run into problems with floats and
-footnotes, as mentioned in the \href{http://texdoc.net/pkg/cuted}{cuted
-package documentation}. In the case of problems with footnotes, it may
-be possible to correct the situation using commands
-\texttt{\textbackslash{}footnotemark} and
-\texttt{\textbackslash{}footnotetext}.
-
-\begin{equation}
-  \begin{aligned}
-(x+y)^3&=(x+y)(x+y)^2\\
-       &=(x+y)(x^2+2xy+y^2) \\
-       &=x^3+3x^2y+3xy^3+x^3. 
-       \label{eqn:example} 
-  \end{aligned}
-\end{equation}
+All standard LaTeX environment are directly usable if needed, including
+of course all mathematical environments and symbols such as, say, the
+greek lettering: \(\alpha\), \(\beta\), \(\gamma\), and so on.
 
 %\showmatmethods
-\showacknow
+
+\pnasbreak 
 
 
-\bibliography{pinp}
-\bibliographystyle{jss}
 
+\begin{thebibliography}{3}
+\newcommand{\enquote}[1]{``#1''}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\eprint}[2][]{\url{#2}}
 
+\bibitem[{Allaire \emph{et~al.}(2017)Allaire, {R Foundation}, Wickham, {Journal
+  of Statistical Software}, Xie, Vaidyanathan, {Association for Computing
+  Machinery}, Boettiger, {Elsevier}, Broman, Mueller, Quast, Pruim, Marwick,
+  Wickham, Keyes, and Yu}]{CRAN:rticles}
+Allaire J, {R Foundation}, Wickham H, {Journal of Statistical Software}, Xie Y,
+  Vaidyanathan R, {Association for Computing Machinery}, Boettiger C,
+  {Elsevier}, Broman K, Mueller K, Quast B, Pruim R, Marwick B, Wickham C,
+  Keyes O, Yu M (2017).
+\newblock \emph{rticles: Article Formats for R Markdown}.
+\newblock R package version 0.4.1,
+  \urlprefix\url{https://CRAN.R-project.org/package=rticles}.
+
+\bibitem[{MacFarlane(2017)}]{pandoc}
+MacFarlane J (2017).
+\newblock \emph{Pandoc: A Universal Document Converter}.
+\newblock Version 1.19.2.1, \urlprefix\url{http://pandoc.org}.
+
+\bibitem[{Xie(2017)}]{CRAN:knitr}
+Xie Y (2017).
+\newblock \emph{knitr: A General-Purpose Package for Dynamic Report Generation
+  in R}.
+\newblock R package version 1.17, \urlprefix\url{https://yihui.name/knitr/}.
+
+\end{thebibliography}
 
 \end{document}
 
