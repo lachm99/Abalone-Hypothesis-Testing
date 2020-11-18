@@ -326,10 +326,9 @@ $\widehat{\sqrt{log(rings)}} = 1.330 + 0.297 log(whole) -0.243 log(shucked)  + 0
 To answer our question we can say that our model can predict the square root log of the number of rings with 62.8% explainable variance using all the provided variables, making for a respectable regressive model. 
 
 # Discussion/Conclusion
+Conducting this analysis was fruitful. Our results demonstrate that we can indeed construct a model that will approximate an Abalone's age without needing any arduous ring-counting. Such a tool is very useful for monitoring large marine ecosystems, where there are potentially thousands of observations needing classification, and research time is better spent collecting and analysing observations rather than counting rings.  
 
-All standard LaTeX environment are directly usable if needed,
-including of course all mathematical environments and symbols such as,
-say, the greek lettering: $\alpha$, $\beta$, $\gamma$, and so on.
+However, this ideal usage exposes one limitation of the data. Our data only pertains to _Haliotis_ _Rubra_, and so we cannot claim that our model accounts for species, or will even perform generally among Haliotes. Any conservational or environmental inferences will be limited as such.
 
 # Appendix
 
@@ -366,9 +365,4 @@ GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data),
 \end{figure}
 
 <!-- Acknowledgements, and References, are automatically typeset after this -->
-
-
-
-
-
 
