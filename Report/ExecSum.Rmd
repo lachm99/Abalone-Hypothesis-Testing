@@ -333,12 +333,19 @@ say, the greek lettering: $\alpha$, $\beta$, $\gamma$, and so on.
 
 # Appendix
 
-\begin{figure}[!h]
-    \begin{center}
-    \includegraphics[width=0.3\textwidth, height=1.8in]{Independence} 
-    \end{center}
-\end{figure}
+## Correlation matrix of initial dataset
+```{r, warning = FALSE, fig.width=3, fig.height=3, cache=TRUE}
+fn_data = function(data, mapping, ...) {
+  p = ggplot(data = data, mapping = mapping) +
+    geom_point(shape=".", size=0.001) +
+    geom_smooth(method=lm, fill = "red", color="red", se = FALSE, size=0.3) 
+  p
+}
+GGally::ggpairs(data, columns = 1:9, lower = list(continuous = fn_data),
+    upper = list(continuous = wrap("cor", size = 1))) + theme_bw(base_size = 2)
+```
 
+## Correlation matrix of transformed variables
 ```{r, warning = FALSE, fig.width=3, fig.height=3, cache=TRUE}
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = transformed, mapping = mapping) +
@@ -350,6 +357,13 @@ GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data),
     upper = list(continuous = wrap("cor", size = 1))) + theme_bw(base_size = 2)
 ```
 
+## Locations of where data was collected
+
+\begin{figure}[H]
+    \begin{center}
+    \includegraphics[width=0.3\textwidth, height=1.8in]{Independence} 
+    \end{center}
+\end{figure}
 
 <!-- Acknowledgements, and References, are automatically typeset after this -->
 
