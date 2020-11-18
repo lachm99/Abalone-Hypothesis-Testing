@@ -142,39 +142,41 @@ backward approach included all variables, shown in the table below.
     \hline
     Predictors & Estimates & p & Estimates & p\\
     \hline
-    (Intercept) & 1.43 & **<0.001** & 1.45 & **<0.001**\\
-    logshell & 0.11 & **<0.001** & 0.11 & **<0.001**\\
-    logshucked & -0.19 & **<0.001** & -0.19 & **<0.001**\\
-    logwhole & 0.19 & **<0.001** & 0.20 & **<0.001**\\
-    sexi & -0.02 & **<0.001** & -0.01 & **<0.001**\\
-    logviscera & -0.03 & **<0.001** & -0.02 & **<0.001**\\
-    sqrtheight & 0.13 & **0.007** & 0.12 & **0.012**\\
-     &  & & 0.07 & **0.005**\\
-     &  & & -0.08 & **0.005**\\
+    (Intercept) & 1.43 & $\textbf{<0.001}$ & 1.45 & $\textbf{<0.001}$\\
+    log shell & 0.11 & $\textbf{<0.001}$ & 0.11 & $\textbf{<0.001}$\\
+    logshucked & -0.19 & $\textbf{<0.001}$ & -0.19 & $\textbf{<0.001}$\\
+    logwhole & 0.19 & $\textbf{<0.001}$ & 0.20 & $\textbf{<0.001}$\\
+    sexi & -0.02 & $\textbf{<0.001}$ & -0.01 & $\textbf{<0.001}$\\
+    logviscera & -0.03 & $\textbf{<0.001}$ & -0.02 & $\textbf{<0.001}$\\
+    sqrtheight & 0.13 & $\textbf{0.007}$ & 0.12 & $\textbf{0.012}$\\
+    logdiam &  & & 0.07 & $\textbf{0.005}$\\
+     loglength &  & & -0.08 & $\textbf{0.005}$\\
     \hline
     Observations & 4175 &  & 1.45 & \\
     $R^2/R^2$ adjusted & 0.647 / 0.647 & & 0.648 / 0.647 & \\
-    AIC & -10882.310 & & -10887.886 & 
+    AIC & -10882.310 & & -10887.886 & \\
 \end{tabular}
 \end{center}
 
-\subsection{3.3 Assumption Checking}\label{assumption-checking}
+ \#\# 3.3 Assumption Checking
 
 \subsubsection{Forward Residual Verse Fitted/QQ
 Plot}\label{forward-residual-verse-fittedqq-plot}
 
 \begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-4-1} \end{center}
 
-\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-5-1} \end{center}
-
 \subsubsection{Backward Residual Verse Fitted/QQ
 Plot}\label{backward-residual-verse-fittedqq-plot}
 
-\begin{center}\includegraphics[width=0.5\linewidth]{ExecSum_files/figure-latex/unnamed-chunk-6-1} \end{center}
-
-\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-7-1} \end{center}
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-5-1} \end{center}
 
 Assumption checks for both forward and backward models;
+
+\begin{figure}[!h]
+    \begin{center}
+    \includegraphics[width=0.3\textwidth, height=1.8in]{Independence} 
+    \end{center}
+\end{figure}
 
 \begin{itemize}
      \item[$-$] \textbf{Linearity}: The residual vs fitted values plot indicates no obvious curvature for both thus the linearity assumption is satisfied.
@@ -193,9 +195,7 @@ RMSE and MAE we could see that they only differ very slightly,
 indicating the better performing model will be the backward model over
 the forward model, due to having a lower RMSE and MAE.
 
-\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-10-1} \end{center}
-
-\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-11-1} \end{center}
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-8-1} \end{center}
 
 Talk about Given the strong multicollinearity observed between some
 variables it is good to note the multicollinearity among some variables,
