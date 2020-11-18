@@ -231,7 +231,6 @@ sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,d
 \end{tabular}
 \end{center}
 
-</br>
 ## 3.3 Assumption Checking 
 
 ### Forward Residual Verse Fitted/QQ Plot
@@ -239,12 +238,12 @@ sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,d
 # autoplot(step.fwd.aic,which=1)
 x = transformed
 x = x %>% mutate(lfitted = step.fwd.aic$fitted.values, lresid = step.fwd.aic$residuals )
-forward_plot1 = ggplot(x, aes(x = lfitted ,y = lresid)) + geom_jitter(size=0.2, alpha=0.5, col="black") + geom_smooth(size=0.5) +
+forward_plot1 = ggplot(x, aes(x = lfitted ,y = lresid)) + geom_jitter(size=0.1, alpha=0.5, col="black", shape=".") + geom_smooth(size=0.5) +
   labs(x = "Fitted", y = "Residuals") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
 
 # qqnorm(step.fwd.aic$residuals)
 # qqline(step.fwd.aic$residuals)
-forward_plot2 = ggplot(step.fwd.aic, aes(sample = step.fwd.aic$residuals)) + stat_qq(alpha=0.5, shape=1) + stat_qq_line(colour="blue") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
+forward_plot2 = ggplot(step.fwd.aic, aes(sample = step.fwd.aic$residuals)) + stat_qq(alpha=0.5, size=0.5, shape=1) + stat_qq_line(colour="blue") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
 
 gridExtra::grid.arrange(forward_plot1, forward_plot2, ncol=2)
 ```
@@ -254,11 +253,11 @@ gridExtra::grid.arrange(forward_plot1, forward_plot2, ncol=2)
 # autoplot(step.fwd.aic,which=1)
 x = transformed
 x = x %>% mutate(lfitted = step.back.aic$fitted.values, lresid = step.back.aic$residuals )
-back_plot1 = ggplot(x, aes(x = lfitted ,y = lresid)) + geom_jitter(size=0.2, alpha=0.5, col="black") + geom_smooth(size=0.5) +
+back_plot1 = ggplot(x, aes(x = lfitted ,y = lresid)) + geom_jitter(size=0.1, alpha=0.5, col="black", shape=".") + geom_smooth(size=0.5) +
   labs(x = "Fitted", y = "Residuals") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
 
 # autoplot(step.fwd.aic,which=2)
-back_plot2 = ggplot(step.back.aic, aes(sample = step.back.aic$residuals)) + stat_qq(alpha=0.5, shape=1) + stat_qq_line(colour="blue") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
+back_plot2 = ggplot(step.back.aic, aes(sample = step.back.aic$residuals)) + stat_qq(alpha=0.5, size=0.5, shape=1) + stat_qq_line(colour="blue") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
 # qqnorm(step.back.aic$residuals)
 # qqline(step.back.aic$residuals)
 
