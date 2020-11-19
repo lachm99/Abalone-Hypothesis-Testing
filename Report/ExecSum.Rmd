@@ -5,12 +5,12 @@ title: An Abalone-Age Investigation
 # affiliations and addresses. Use '~' or '""' to suppress the
 # display of the affiliation and address.
 author:
-  - name: 470408957 | 480423142 | 490209370 | 490384806 | 490443251 |   
+  - name: "| 470408957 | 480423142 | 490209370 | 490384806 | 490443251 |"   
 
 # Optional: line of arbitrary text with additional information.
 # Could be used, for example, to mention the bibliographic info in a post-print.
 # If not specified, defaults to "This version was compiled on \today"
-#date_subtitle: Published in *Journal of Statistical Software*, 2018
+date_subtitle: Data2002 Group Project | November 2020
 
 # For footer text  TODO(fold into template, allow free form two-authors)
 
@@ -19,7 +19,7 @@ doi_footer:
 
 # Abstract
 abstract: |
-  In this project we investigated two predictive models for the predicitng the number of rings in an abalone which is used to find the age by adding 1.5 to the number. In order for our models to satisfy the linearity assumptions we had to perform transformations on the data set, where we then could conduct multiple linear regression through backward and forward selection using Akaike Information Criterion (AIC). The resulting model selection was further manipulated as there was strong observed collinearity with some independant variables which led to our final model. 
+  In this report, we investigate whether the age of _Haliotis_ _Rubra_ _(Blacklip_ _Abalone)_ can be estimated from external physical attributes. We constructed and evaluated two multiple linear regression models using the Akaike Information Criterion (AIC). After refinement of the selected model, we found that given two weights, three dimensions, and the sexual maturity of an ablone, we could explain 62.8% of the the variance in our target variable. Provided these measurements, predictions could in turn be untransformed to generate age estimates for abalone.
 
 # Optional: One or more keywords
 #keywords:
@@ -123,25 +123,42 @@ filter(height < 0.5)
 
 ```
 # Introduction 
-
-The original article for this data set was utilised to explore the age of an abalone. However, the classical method for determining age is to cut the shell, stain it, and count the number of rings under a microscope. This is a very tedious process, which provides reasoning to encompass easier ways in calculating the number of rings without manually counting the rings. We therefore aim to construct a regression model that can predict the number of rings an abalone has (calculating the age), using only an abalones physical attributes which are easily and quickly measured. To do so, linear relationships need to be considered between the variables and the value they aim to predict.
+Marine biologists and conservationists often study the age and growth patterns of a species in order to understand its demographics in and across various ecosystems.
+As a sought after commodity within the fishing industry, this is especially true of Abalone.
+However, the classical method for determining an abalone's age is arduous and time inefficient; counting the rings in a specially prepared shell under a microscope.
+We therefore aim to find a technique for estimating an abalone's age using only physical attributes which are easily and quickly measured. We will construct a multiple regression model in order to predict the number of rings an abalone has, and evaluate whether this model can effectively predict observed values and would therefore have any utility when applied to new observations.
 
 # Data Set
-This biological study looks at abalones which are a common type of sea snail, where the majority of abalone species are found in cold waters, such as off the coasts of New Zealand, South Africa, Australia, and Tasmania. The data set is provided by the University of California Irvine Machine Learning Repository which explores variables describing physical characteristics for abalones. The original data was collected by Marine Resources Division in Taroona, Tasmania, containing 4177 observations with 9 different variables which has no missing values. 
+This data pertains to _Haliotis_ _Rubra_, an Australian species of abalone found predominantly in cold waters, such as off the coast of Tasmania. 
+The relevant data were originally collected by _the Marine Resources Division in Taroona, Tasmania_ to explore _neural network_ techniques for estimating the age of abalone. The data were made available by the University of California Irvine Machine Learning Repository. The dataset contains 4177 observations upon 9 different variables, and it contains no missing values. Each variable describes some physical property - a weight, dimension, sex, ring count - of the observed abalone.
 
-## 2.1 Variables
+## 2.1 Variables  
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Name} & \textbf{Type} & \textbf{Description} \\
+\hline
 
-\begin{itemize}
-	 \item[$-$] Sex; factor; male, female or infant
-	 \item[$-$] Length (mm); continuous; longest shell measurement
-	 \item[$-$] Diameter (mm); continuous; perpendicular to length
-	 \item[$-$] Height (mm); continuous; with meat in shell
-	 \item[$-$] Whole Weight (g); continuous; whole abalone
-	 \item[$-$] Shucked Weight (g); continuous; weight of meat
-	 \item[$-$] Viscera Weight (g); continuous; gut weight (after bleeding)
-	 \item[$-$] Shell Weight (g); continuous; after being dried
-	 \item[$-$] Rings; integer; number of rings. +1.5 gives age in years
-\end{itemize}
+Sex & factor & male, female or infant \\
+\hline
+Length (mm) & continuous & longest shell measurement \\
+\hline
+Diameter (mm) & continuous & perpendicular to length \\
+\hline
+Height (mm) & continuous & with meat in shell \\
+\hline
+Whole Weight (g) & continuous & whole abalone \\
+\hline
+Shucked Weight (g) & continuous & weight of meat \\
+\hline
+Viscera Weight (g) & continuous & gut weight (after bleeding) \\
+\hline
+Shell Weight (g) & continuous & after being dried \\
+\hline
+Rings & integer & number of rings. +1.5 gives age in years \\
+\hline
+\end{tabular}
+\end{center}
 
     
 ## 2.2 Outliers
