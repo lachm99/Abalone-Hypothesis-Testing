@@ -132,7 +132,7 @@ We therefore aim to find a technique for estimating an abalone's age using only 
 
 # Data Set
 This data pertains to _Haliotis_ _Rubra_, an Australian species of abalone found predominantly in cold waters, such as off the coast of Tasmania. 
-The relevant data were originally collected by _the Marine Resources Division in Taroona, Tasmania_ to explore _neural network_ techniques for estimating the age of abalone. The data were made available by the University of California Irvine Machine Learning Repository. The dataset contains 4177 observations upon 9 different variables, and it contains no missing values. Each variable describes some physical property - a weight, dimension, sex, ring count - of the observed abalone.
+The relevant data were originally collected by _the Marine Resources Division in Taroona, Tasmania_ to explore _neural network_ techniques for estimating the age of abalone. The data were made available by the University of California Irvine Machine Learning Repository. The dataset contains 4177 observations upon 9 different variables, and it contains no missing values (\cite{Dua:2019}). Each variable describes some physical property - a weight, dimension, sex, ring count - of the observed abalone.
 
 ## 2.1 Variables  
 \begin{center}
