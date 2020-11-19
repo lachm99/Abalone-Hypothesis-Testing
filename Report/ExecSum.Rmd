@@ -245,7 +245,7 @@ sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,d
     log viscera & -0.03 & $\textbf{<0.001}$ & -0.02 & $\textbf{<0.001}$\\
     sqrt height & 0.13 & $\textbf{0.007}$ & 0.12 & $\textbf{0.012}$\\
     log diameter &  & & 0.07 & $\textbf{0.005}$\\
-     log length &  & & -0.08 & $\textbf{0.005}$\\
+    log length &  & & -0.08 & $\textbf{0.005}$\\
     \hline
     Observations & 4175 &  & 1.45 & \\
     $R^2/R^2$ adjusted & 0.647 / 0.647 & & 0.648 / 0.647 & \\
@@ -339,11 +339,21 @@ gridExtra::grid.arrange(plot1, plot2, ncol=2)
 
 Thus, it is clearly seen that the Backward model is the better approach as it has a lower Residual Mean Square Error and Mean Absolute Error, however referring to appendix 4 there appears to be significant multicollinearity within the dataset which may reduce the precision of the estimate coefficients, lessening the statistical power. This was expected as living organisms tend to grow with age, hence the weight and height will all grow at a rapid rate til it eventually slows down at a certain point in the life.\par 
   Additionally, the p values for the model all are statistically significant except the sex factor where p-value of sex_f not providing enough evidence to reject the null hypothesis that coefficient is equal to zero, interpreting as to whether the abalone is adult or infant. \par
-  Furthermore, with strong multicollinearity within the data set and all the variables are statistically significant the optimal solution was to remove some of the highly correlated independent variables of weight. It was found that the two more significant weight variables were shucked weight and whole weight, based on the standardized regression coefficients, show below. 
+  Furthermore, with strong multicollinearity within the data set and all the variables are statistically significant the optimal solution was to remove some of the highly correlated independent variables of weight. It was found that the two more significant weight variables were shucked weight and whole weight, based on the standardized regression coefficients, shown below. 
 
-```{r}
-lm.beta(step.back.aic)
+```{r, include=FALSE}
+a = lm.beta(step.back.aic)
+a[c('log_whole', 'log_shucked', 'log_viscera', 'log_shell')]
+a[c('log_diam', 'log_length', 'sqrt_height', 'sex_i')]
 ```  
+
+\begin{tabular}{c c c c}
+  log whole & log shucked & log viscera & log shell \\
+  $1.4790451$ & $-1.5000279$ & $-0.1885621$ & $0.8269786$ \\
+\hline
+  log diam & log length & sqrt height & sex infant \\
+  $0.19408468$ & $-0.19821088$ & $0.06175294$ & $-0.06326012$
+\end{tabular}
 
 Thus the viscera weight and shell weight vere two were removed which led us to our final model as follows; 
 
@@ -365,12 +375,11 @@ Conducting this analysis was fruitful, where the results demonstrated that we ca
     \item[$-$] The data was only collected around the Tasman Sea rendering the model to potentially become unreliable in differing locations as they are found all over the globe, where factors from the surrounding environment migth influence the age.
 \end{itemize}
 
- \pagebreak
 
 # Appendix
 
 \textbf{Appendix 1: Correlation matrix of initial dataset}
-```{r, warning = FALSE, fig.width=3, fig.height=3, cache=TRUE}
+```{r, warning = FALSE, fig.width=2.5, fig.height=2.5, cache=TRUE}
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = data, mapping = mapping) +
     geom_point(shape=".", size=0.001) +
@@ -382,7 +391,7 @@ GGally::ggpairs(data, columns = 1:9, lower = list(continuous = fn_data),
 ```
 
 \textbf{Appendix 2: Correlation matrix of transformed variables}
-```{r, warning = FALSE, fig.width=3, fig.height=3, cache=TRUE}
+```{r, warning = FALSE, fig.width=2.5, fig.height=2.5, cache=TRUE}
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = transformed, mapping = mapping) +
     geom_point(shape=".", size=0.001) +
@@ -394,19 +403,18 @@ GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data),
 ```
 
 \textbf{Appendix 3: Locations of where data was collected (\cite{article})}
-
 \begin{figure}[H]
     \begin{center}
     \includegraphics[width=0.35\textwidth, height=2in]{Independence} 
     \end{center}
 \end{figure}
 
+\newpage
+
 \textbf{Appendix 4: Correlation Matrix}
 ```{r, warning = FALSE, fig.width=4, fig.height=4, cache=TRUE}
 corr <- round(cor(transformed), 2)
-ggcorrplot(corr, method = "square")
+ggcorrplot(corr, method = "square") 
 ```
-
-
 <!-- Acknowledgements, and References, are automatically typeset after this -->
 
