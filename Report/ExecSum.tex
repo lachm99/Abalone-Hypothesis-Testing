@@ -22,7 +22,8 @@
 
 \title{An Abalone-Age Investigation}
 
-\author[]{470408957 \textbar{} 490443251 \textbar{}}
+\author[]{\textbar{} 470408957 \textbar{} 480423142 \textbar{} 490209370
+\textbar{} 490384806 \textbar{} 490443251 \textbar{}}
 
 
 \setcounter{secnumdepth}{3}
@@ -34,18 +35,18 @@
  
 
 \begin{abstract}
-In this project we investigated two predictive models for the predicitng
-the number of rings in an abalone which is used to find the age by
-adding 1.5 to the number. In order for our models to satisfy the
-linearity assumptions we had to perform transformations on the data set,
-where we then could conduct multiple linear regression through backward
-and forward selection using Akaike Information Criterion (AIC). The
-resulting model selection was further manipulated as there was strong
-observed collinearity with some independant variables which led to our
-final model.
+In this report, we investigate whether the age of \emph{Haliotis}
+\emph{Rubra} \emph{(Blacklip} \emph{Abalone)} can be estimated from
+external physical attributes. We constructed and evaluated two multiple
+linear regression models using the Akaike Information Criterion (AIC).
+After refinement of the selected model, we found that given two weights,
+three dimensions, and the sexual maturity of an ablone, we could explain
+62.8\% of the the variance in our target variable. Provided these
+measurements, predictions could in turn be untransformed to generate age
+estimates for abalone.
 \end{abstract}
 
-\dates{This version was compiled on \today} 
+\dates{Data2002 Group Project \textbar{} November 2020}
 
 
 % initially we use doi so keep for backwards compatibility
@@ -69,43 +70,64 @@ final model.
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-The orginal article for this data set was utilised to explore the age of
-an abalone. However, the classical method for determining age is to cut
-the shell, stain it, and count the number of rings under a microscope.
-This is a very tedious process, which provides reasoning to encompass
-easier ways in calculating the number of rings without manually counting
-the rings. We therefore aim to construct a regression model that can
-predict the number of rings an abalone has (calculating the age), using
-only an abalones physical attributes which are easily and quickly
-measured. To do so, linear relationships need to be considered between
-the variables and the value they aim to predict.
+Marine biologists and conservationists often study the age and growth
+patterns of a species in order to understand its demographics in and
+across various ecosystems. As a sought after commodity within the
+fishing industry, this is especially true of Abalone. However, the
+classical method for determining an abalone's age is arduous and time
+inefficient; counting the rings in a specially prepared shell under a
+microscope. We therefore aim to find a technique for estimating an
+abalone's age using only physical attributes which are easily and
+quickly measured. We will construct a multiple regression model in order
+to predict the number of rings an abalone has, and evaluate whether this
+model can effectively predict observed values and would therefore have
+any utility when applied to new observations.
 
 \hypertarget{data-set}{%
 \section{Data Set}\label{data-set}}
 
-This biological study looks at abalones which are a common type of sea
-snail, where the majority of abalone species are found in cold waters,
-such as off the coasts of New Zealand, South Africa, Australia, and
-Tasmania. The data set is provided by the University of California
-Irvine Machine Learning Repository which explores variables describing
-physical characteristics for abalones. The original data was collected
-by Marine Resources Division in Taroona, Tasmania, containing 4177
-observations with 9 different variables which has no missing values.
+This data pertains to \emph{Haliotis} \emph{Rubra}, an Australian
+species of abalone found predominantly in cold waters, such as off the
+coast of Tasmania. The relevant data were originally collected by
+\emph{the Marine Resources Division in Taroona, Tasmania} to explore
+\emph{neural network} techniques for estimating the age of abalone. The
+data were made available by the University of California Irvine Machine
+Learning Repository. The dataset contains 4177 observations upon 9
+different variables, and it contains no missing values. Each variable
+describes some physical property - a weight, dimension, sex, ring count
+- of the observed abalone.
 
 \hypertarget{variables}{%
 \subsection{2.1 Variables}\label{variables}}
 
-\begin{itemize}
-     \item[$-$] Sex; factor; male, female or infant
-     \item[$-$] Length (mm); continous; longest shell measurement
-     \item[$-$] Diameter (mm); continous; perpendicular to length
-     \item[$-$] Height (mm); continous; with meat in shell
-     \item[$-$] Whole Weight (g); continous; whole abalone
-     \item[$-$] Shucked Weight (g); continous; weight of meat
-     \item[$-$] Viscera Weight (g); continous; gut weight (after bleeding)
-     \item[$-$] Shell Weight (g); continous; after being dried
-     \item[$-$] Rings; integer; number of rings. +1.5 gives age in years
-\end{itemize}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Name} & \textbf{Type} & \textbf{Description} \\
+\hline
+
+Sex & factor & male, female or infant \\
+\hline
+Length (mm) & continuous & longest shell measurement \\
+\hline
+Diameter (mm) & continuous & perpendicular to length \\
+\hline
+Height (mm) & continuous & with meat in shell \\
+\hline
+Whole Weight (g) & continuous & whole abalone \\
+\hline
+Shucked Weight (g) & continuous & weight of meat \\
+\hline
+Viscera Weight (g) & continuous & gut weight (after bleeding) \\
+\hline
+Shell Weight (g) & continuous & after being dried \\
+\hline
+Rings & integer & number of rings. +1.5 gives age in years \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
 
 \hypertarget{outliers}{%
 \subsection{2.2 Outliers}\label{outliers}}
@@ -124,24 +146,24 @@ filtered out.
 \subsection{3.1 Transformations}\label{transformations}}
 
 Prior to selecting an appropriate model, with reference to appendix 1,
-clearly the indepedant variables do not possess a linear relationship
+clearly the independent variables do not possess a linear relationship
 with number of rings. The variables clearly rise rapidly and reach a
 plateau, thus it was found best to perform log transformations of the
 variable rings, length, diameter, weight shucked, weight viscera, weight
 shell and a square root transformation was applied to height and log of
 rings. With reference to appendix 2, the data set now adopts a linear
 relationship with the predictive variable, allowing for a linear
-regressive model to work appropiately.
+regressive model to work appropriately.
 
 \hypertarget{model-selection}{%
 \subsection{3.2 Model Selection}\label{model-selection}}
 
-Provided the linearity assumptions with respect to the dependant
-variable are satisfied, a model search was justfiied by the Akaike
-information criterion through a backward and forward variable seleciton.
-After conducting the relevant seacrch it was found that the forward
-model did not include log of diameter and log of length while the
-backward approach included all variables, shown in the table below.
+Provided the linearity assumptions with respect to the dependent
+variable are satisfied, a model search was justified by the Akaike
+information criterion through a backward and forward variable selection.
+After conducting the relevant search it was found that the forward model
+did not include log of diameter and log of length while the backward
+approach included all variables, shown in the table below.
 
 \begin{center}
 \begin{tabular}{c c c c c}
@@ -151,19 +173,21 @@ backward approach included all variables, shown in the table below.
     \hline
     (Intercept) & 1.43 & $\textbf{<0.001}$ & 1.45 & $\textbf{<0.001}$\\
     log shell & 0.11 & $\textbf{<0.001}$ & 0.11 & $\textbf{<0.001}$\\
-    logshucked & -0.19 & $\textbf{<0.001}$ & -0.19 & $\textbf{<0.001}$\\
-    logwhole & 0.19 & $\textbf{<0.001}$ & 0.20 & $\textbf{<0.001}$\\
-    sexi & -0.02 & $\textbf{<0.001}$ & -0.01 & $\textbf{<0.001}$\\
-    logviscera & -0.03 & $\textbf{<0.001}$ & -0.02 & $\textbf{<0.001}$\\
-    sqrtheight & 0.13 & $\textbf{0.007}$ & 0.12 & $\textbf{0.012}$\\
-    logdiam &  & & 0.07 & $\textbf{0.005}$\\
-     loglength &  & & -0.08 & $\textbf{0.005}$\\
+    log shucked & -0.19 & $\textbf{<0.001}$ & -0.19 & $\textbf{<0.001}$\\
+    log whole & 0.19 & $\textbf{<0.001}$ & 0.20 & $\textbf{<0.001}$\\
+    sex infant & -0.02 & $\textbf{<0.001}$ & -0.01 & $\textbf{<0.001}$\\
+    log viscera & -0.03 & $\textbf{<0.001}$ & -0.02 & $\textbf{<0.001}$\\
+    sqrt height & 0.13 & $\textbf{0.007}$ & 0.12 & $\textbf{0.012}$\\
+    log diameter &  & & 0.07 & $\textbf{0.005}$\\
+     log length &  & & -0.08 & $\textbf{0.005}$\\
     \hline
     Observations & 4175 &  & 1.45 & \\
     $R^2/R^2$ adjusted & 0.647 / 0.647 & & 0.648 / 0.647 & \\
     AIC & -10882.310 & & -10887.886 & \\
 \end{tabular}
 \end{center}
+
+\newpage
 
 \hypertarget{assumption-checking}{%
 \subsection{3.3 Assumption Checking}\label{assumption-checking}}
@@ -206,10 +230,10 @@ the estimate coefficients, lessening the statistical power. This was
 expected as living organisms tend to grow with age, hence the weight and
 height will all grow at a rapid rate til it eventually slows down at a
 certain point in the life. Additionally, the p values for the model all
-are statisically significant except the sex factor where p-value of
+are statistically significant except the sex factor where p-value of
 sex\_f not providing enough evidence to reject the null hypothesis that
 coefficient is equal to zero, interpreting as to whether the abalone is
-adult or infant. Furthemore, with strong multicollinearity within the
+adult or infant. Furthermore, with strong multicollinearity within the
 data set and all the variables are statistically significant the optimal
 solution was to remove some of the highly correlated independent
 variables of weight. It was found that the two more significant weight
@@ -225,18 +249,55 @@ all the provided variables, making for a respectable regressive model.
 \hypertarget{discussionconclusion}{%
 \section{Discussion/Conclusion}\label{discussionconclusion}}
 
-All standard LaTeX environment are directly usable if needed, including
-of course all mathematical environments and symbols such as, say, the
-greek lettering: \(\alpha\), \(\beta\), \(\gamma\), and so on.
+Conducting this analysis was fruitful. Our results demonstrate that we
+can indeed construct a model that will approximate an Abalone's age
+without needing any arduous ring-counting. Such a tool is very useful
+for our introductory scenario. When monitoring large marine ecosystems,
+research time is better spent collecting and analysing observations
+rather than counting rings.
+
+However, we must acknowledge a limitation in our data. Our data only
+pertains to \emph{Haliotis} \emph{Rubra}, and so we cannot claim that
+our model accounts for species, or will even perform generally among
+Haliotes. Any conservational or environmental inferences will be limited
+as such.\\
+Additionally, the provided variables were not necessarily equally useful
+in the model. There is high co-linearity among the weight variables, and
+this reduces the weight and usefulness of each. In considering future
+research, it would be more profitable to forego one of these
+measurements in favour of another that would add more breadth to our
+profile of the abalone - i.e.~depth found or total volume.
 
 \hypertarget{appendix}{%
 \section{Appendix}\label{appendix}}
 
-\begin{figure}[!h]
+\hypertarget{appendix-1-correlation-matrix-of-initial-dataset}{%
+\subsubsection{Appendix 1: Correlation matrix of initial
+dataset}\label{appendix-1-correlation-matrix-of-initial-dataset}}
+
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-9-1} \end{center}
+
+\hypertarget{appendix-2-correlation-matrix-of-transformed-variables}{%
+\subsubsection{Appendix 2: Correlation matrix of transformed
+variables}\label{appendix-2-correlation-matrix-of-transformed-variables}}
+
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-10-1} \end{center}
+
+\hypertarget{appendix-3-locations-of-where-data-was-collected}{%
+\subsubsection{Appendix 3: Locations of where data was
+collected}\label{appendix-3-locations-of-where-data-was-collected}}
+
+\begin{figure}[H]
     \begin{center}
-    \includegraphics[width=0.3\textwidth, height=1.8in]{Independence} 
+    \includegraphics[width=0.35\textwidth, height=2in]{Independence} 
     \end{center}
 \end{figure}
+
+\hypertarget{appendix-4-correlation-matrix}{%
+\subsubsection{Appendix 4: Correlation
+Matrix}\label{appendix-4-correlation-matrix}}
+
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-11-1} \end{center}
 
 %\showmatmethods
 

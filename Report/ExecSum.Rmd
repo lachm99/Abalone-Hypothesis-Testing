@@ -92,6 +92,7 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE)
 # install.packages("ggfortify")
 # install.packages("caret")
 # install.packages("sjPlot")
+# install.packages("ggcorrplot")
 library(tidyverse)
 library(qtlcharts)
 library(corrplot)
@@ -99,6 +100,7 @@ library(GGally)
 library(ggfortify)
 library(caret)
 library(sjPlot)
+library(ggcorrplot)
 library(corrplot)
 
 cols = c("sex",	
@@ -161,7 +163,8 @@ Rings & integer & number of rings. +1.5 gives age in years \\
 \end{center}
 
     
-## 2.2 Outliers
+\newpage
+## 2.2 Outliers  
 
 In exploring the different variables there appeared to be two values identified as clear outliers in the height variable. Thus, concluding  they are likely to be errors induced when entering the data and will be filtered out. 
 
@@ -248,6 +251,7 @@ sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,d
 \end{tabular}
 \end{center}
 
+\newpage
 ## 3.3 Assumption Checking 
 
 ### Forward Residual Verse Fitted/QQ Plot
@@ -343,13 +347,15 @@ $\widehat{\sqrt{log(rings)}} = 1.330 + 0.297 log(whole) -0.243 log(shucked)  + 0
 To answer our question we can say that our model can predict the square root log of the number of rings with 62.8% explainable variance using all the provided variables, making for a respectable regressive model. 
 
 # Discussion/Conclusion
-Conducting this analysis was fruitful. Our results demonstrate that we can indeed construct a model that will approximate an Abalone's age without needing any arduous ring-counting. Such a tool is very useful for monitoring large marine ecosystems, where there are potentially thousands of observations needing classification, and research time is better spent collecting and analysing observations rather than counting rings.  
+Conducting this analysis was fruitful. Our results demonstrate that we can indeed construct a model that will approximate an Abalone's age without needing any arduous ring-counting. Such a tool is very useful for our introductory scenario. When monitoring large marine ecosystems, research time is better spent collecting and analysing observations rather than counting rings.  
 
-However, this ideal usage exposes one limitation of the data. Our data only pertains to _Haliotis_ _Rubra_, and so we cannot claim that our model accounts for species, or will even perform generally among Haliotes. Any conservational or environmental inferences will be limited as such.
+However, we must acknowledge a limitation in our data. Our data only pertains to _Haliotis_ _Rubra_, and so we cannot claim that our model accounts for species, or will even perform generally among Haliotes. Any conservational or environmental inferences will be limited as such.  
+Additionally, the provided variables were not necessarily equally useful in the model. There is high co-linearity among the weight variables, and this reduces the weight and usefulness of each. In considering future research, it would be more profitable to forego one of these measurements in favour of another that would add more breadth to our profile of the abalone - i.e. depth found or total volume.
+
 
 # Appendix
 
-## Correlation matrix of initial dataset
+### Appendix 1: Correlation matrix of initial dataset
 ```{r, warning = FALSE, fig.width=3, fig.height=3, cache=TRUE}
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = data, mapping = mapping) +
@@ -361,7 +367,7 @@ GGally::ggpairs(data, columns = 1:9, lower = list(continuous = fn_data),
     upper = list(continuous = wrap("cor", size = 1))) + theme_bw(base_size = 2)
 ```
 
-## Correlation matrix of transformed variables
+### Appendix 2: Correlation matrix of transformed variables
 ```{r, warning = FALSE, fig.width=3, fig.height=3, cache=TRUE}
 fn_data = function(data, mapping, ...) {
   p = ggplot(data = transformed, mapping = mapping) +
@@ -373,13 +379,20 @@ GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data),
     upper = list(continuous = wrap("cor", size = 1))) + theme_bw(base_size = 2)
 ```
 
-## Locations of where data was collected
+### Appendix 3: Locations of where data was collected
 
 \begin{figure}[H]
     \begin{center}
-    \includegraphics[width=0.3\textwidth, height=1.8in]{Independence} 
+    \includegraphics[width=0.35\textwidth, height=2in]{Independence} 
     \end{center}
 \end{figure}
+
+### Appendix 4: Correlation Matrix
+```{r, warning = FALSE, fig.width=4, fig.height=4, cache=TRUE}
+corr <- round(cor(transformed), 2)
+ggcorrplot(corr, method = "square")
+```
+
 
 <!-- Acknowledgements, and References, are automatically typeset after this -->
 
