@@ -15,7 +15,7 @@ date_subtitle: Data2002 Group Project | November 2020
 # For footer text  TODO(fold into template, allow free form two-authors)
 
 # Place DOI URL or CRAN Package URL here
-doi_footer: 
+doi_footer: https://github.sydney.edu.au/jary8982/M09B_early_5.git
 
 # Abstract
 abstract: |
@@ -93,6 +93,8 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE)
 # install.packages("caret")
 # install.packages("sjPlot")
 # install.packages("ggcorrplot")
+# install.packages("QuantPsyc")
+library(QuantPsyc)
 library(tidyverse)
 library(qtlcharts)
 library(corrplot)
@@ -132,7 +134,7 @@ We therefore aim to find a technique for estimating an abalone's age using only 
 
 # Data Set
 This data pertains to _Haliotis_ _Rubra_, an Australian species of abalone found predominantly in cold waters, such as off the coast of Tasmania. 
-The relevant data were originally collected by _the Marine Resources Division in Taroona, Tasmania_ to explore _neural network_ techniques for estimating the age of abalone. The data were made available by the University of California Irvine Machine Learning Repository. The dataset contains 4177 observations upon 9 different variables, and it contains no missing values (\cite{Dua:2019}). Each variable describes some physical property - a weight, dimension, sex, ring count - of the observed abalone.
+The relevant data were originally collected by _the Marine Resources Division in Taroona, Tasmania_ to explore _neural network_ techniques for estimating the age of abalone. The data were made available by the University of California Irvine Machine Learning Repository. The dataset contains 4177 observations upon 9 different variables, and it contains no missing values. Each variable describes some physical property - a weight, dimension, sex, ring count - of the observed abalone.
 
 ## 2.1 Variables  
 \begin{center}
@@ -294,7 +296,6 @@ Assumption checks for both forward and backward models;
 	 \item[$-$] \textbf{Normality}: The normality assumption is at least approximately satisfied. In the QQ plot, the points are reasonably close to the diagonal line, however the sample size is large enough to rely upon the central limit theorem ensuring the inferences are approximately valid.
 \end{itemize}
 
-
 # Results 
 
 
@@ -338,7 +339,13 @@ gridExtra::grid.arrange(plot1, plot2, ncol=2)
 
 Thus, it is clearly seen that the Backward model is the better approach as it has a lower Residual Mean Square Error and Mean Absolute Error, however referring to appendix 4 there appears to be significant multicollinearity within the dataset which may reduce the precision of the estimate coefficients, lessening the statistical power. This was expected as living organisms tend to grow with age, hence the weight and height will all grow at a rapid rate til it eventually slows down at a certain point in the life.\par 
   Additionally, the p values for the model all are statistically significant except the sex factor where p-value of sex_f not providing enough evidence to reject the null hypothesis that coefficient is equal to zero, interpreting as to whether the abalone is adult or infant. \par
-  Furthermore, with strong multicollinearity within the data set and all the variables are statistically significant the optimal solution was to remove some of the highly correlated independent variables of weight. It was found that the two more significant weight variables were shucked weight and whole weight, thus the other two were removed which led us to our final model as follows; 
+  Furthermore, with strong multicollinearity within the data set and all the variables are statistically significant the optimal solution was to remove some of the highly correlated independent variables of weight. It was found that the two more significant weight variables were shucked weight and whole weight, based on the standardized regression coefficients, show below. 
+
+```{r}
+lm.beta(step.back.aic)
+```  
+
+Thus the viscera weight and shell weight vere two were removed which led us to our final model as follows; 
 
 \begin{align*}
   \widehat{\sqrt{log(rings)}} &= 1.330 + 0.297 log(whole) -0.243 log(shucked)\\
@@ -346,12 +353,18 @@ Thus, it is clearly seen that the Backward model is the better approach as it ha
   & + 0.205\sqrt{height}-0.013 Sex_{infant}
 \end{align*}
 
-Therefore, our model can predict the square root log of the number of rings with 62.8% explainable variance using all the provided variables, making for a respectable regressive model. 
+Therefore, our model can predict the square root log of the number of rings with 62.8% explainable variance using all the provided variables, making for a respectable regressive model.
 
 # Discussion/Conclusion
-Conducting this analysis was fruitful. Our results demonstrate that we can indeed construct a model that will approximate an Abalone's age without needing any arduous ring-counting. Such a tool is very useful for our introductory scenario. When monitoring large marine ecosystems, research time is better spent collecting and analysing observations rather than counting rings.  \par
-  However, we must acknowledge a limitation in our data. Our data only pertains to _Haliotis_ _Rubra_, and so we cannot claim that our model accounts for species, or will even perform generally among Haliotes. Any conservational or environmental inferences will be limited as such.  \par
-  Additionally, the provided variables were not necessarily equally useful in the model. There is high co-linearity among the weight variables, and this reduces the weight and usefulness of each. In considering future research, it would be more profitable to forego one of these measurements in favour of another that would add more breadth to our profile of the abalone - i.e. depth found or total volume.
+Conducting this analysis was fruitful, where the results demonstrated that we can indeed construct a model that will approximate an Abalone's age without needing any arduous ring-counting. Such a tool is very useful for our introductory scenario, when monitoring large marine ecosystems, in which, research time is better spent collecting and analysing observations rather than counting rings.
+
+## 5.1 Limitations
+\begin{itemize}
+    \item[$-$]  Our data only pertains to \textit{Haliotis Rubra}, and so we cannot claim that our model accounts for species, or will even perform generally among Haliotes. Any conservational or environmental inferences will be limited as such. 
+    \item[$-$] The provided variables were not necessarily equally useful in the model. There is high co-linearity among the weight variables, and this reduces the weight and usefulness of each. In considering future research, it would be more profitable to forego one of these measurements in favour of another that would add more breadth to our profile of the abalone - i.e. depth found or total volume.
+    \item[$-$] The data was only collected around the Tasman Sea rendering the model to potentially become unreliable in differing locations as they are found all over the globe, where factors from the surrounding environment migth influence the age.
+\end{itemize}
+
  \pagebreak
 
 # Appendix
