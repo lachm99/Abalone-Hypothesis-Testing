@@ -76,12 +76,12 @@ across various ecosystems. As a sought after commodity within the
 fishing industry, this is especially true of Abalone. However, the
 classical method for determining an abalone's age is arduous and time
 inefficient; counting the rings in a specially prepared shell under a
-microscope. We therefore aim to find a technique for estimating an
-abalone's age using only physical attributes which are easily and
-quickly measured. We will construct a multiple regression model in order
-to predict the number of rings an abalone has, and evaluate whether this
-model can effectively predict observed values and would therefore have
-any utility when applied to new observations.
+microscope (\cite{Dua:2019}). We therefore aim to find a technique for
+estimating an abalone's age using only physical attributes which are
+easily and quickly measured. We will construct a multiple regression
+model in order to predict the number of rings an abalone has, and
+evaluate whether this model can effectively predict observed values and
+would therefore have any utility when applied to new observations.
 
 \hypertarget{data-set}{%
 \section{Data Set}\label{data-set}}
@@ -93,9 +93,9 @@ coast of Tasmania. The relevant data were originally collected by
 \emph{neural network} techniques for estimating the age of abalone. The
 data were made available by the University of California Irvine Machine
 Learning Repository. The dataset contains 4177 observations upon 9
-different variables, and it contains no missing values. Each variable
-describes some physical property - a weight, dimension, sex, ring count
-- of the observed abalone.
+different variables, and it contains no missing values
+(\cite{Dua:2019}). Each variable describes some physical property - a
+weight, dimension, sex, ring count - of the observed abalone.
 
 \hypertarget{variables}{%
 \subsection{2.1 Variables}\label{variables}}
@@ -155,15 +155,29 @@ rings. With reference to appendix 2, the data set now adopts a linear
 relationship with the predictive variable, allowing for a linear
 regressive model to work appropriately.
 
+\hypertarget{multicollinearity}{%
+\subsection{3.2 Multicollinearity}\label{multicollinearity}}
+
+Referring to appendix 4 there appears to be significant
+multicollinearity within the dataset which may reduce the precision of
+the estimate coefficients, lessening the statistical power. This was
+expected as living organisms tend to grow with age, hence the weight and
+height will all grow at a rapid rate til it eventually slows down at a
+certain point in the life. So the solution was to remove some of the
+highly correlated independent variables of weight. It was found that the
+two more significant weight variables were shucked weight and whole
+weight, thus the other two were removed.
+
+\par
+
 \hypertarget{model-selection}{%
-\subsection{3.2 Model Selection}\label{model-selection}}
+\subsection{3.3 Model Selection}\label{model-selection}}
 
 Provided the linearity assumptions with respect to the dependent
 variable are satisfied, a model search was justified by the Akaike
 information criterion through a backward and forward variable selection.
-After conducting the relevant search it was found that the forward model
-did not include log of diameter and log of length while the backward
-approach included all variables, shown in the table below.
+After conducting the relevant search it was found that the forward and
+the backward model were the same model.
 
 \begin{center}
 \begin{tabular}{c c c c c}
@@ -171,40 +185,28 @@ approach included all variables, shown in the table below.
     \hline
     Predictors & Estimates & p & Estimates & p\\
     \hline
-    (Intercept) & 1.43 & $\textbf{<0.001}$ & 1.45 & $\textbf{<0.001}$\\
-    log shell & 0.11 & $\textbf{<0.001}$ & 0.11 & $\textbf{<0.001}$\\
-    log shucked & -0.19 & $\textbf{<0.001}$ & -0.19 & $\textbf{<0.001}$\\
-    log whole & 0.19 & $\textbf{<0.001}$ & 0.20 & $\textbf{<0.001}$\\
-    sex infant & -0.02 & $\textbf{<0.001}$ & -0.01 & $\textbf{<0.001}$\\
-    log viscera & -0.03 & $\textbf{<0.001}$ & -0.02 & $\textbf{<0.001}$\\
-    sqrt height & 0.13 & $\textbf{0.007}$ & 0.12 & $\textbf{0.012}$\\
-    log diameter &  & & 0.07 & $\textbf{0.005}$\\
-     log length &  & & -0.08 & $\textbf{0.005}$\\
+    (Intercept) & 1.33 & $\textbf{<0.001}$ & 1.33 & $\textbf{<0.001}$\\
+    log whole & 0.30 & $\textbf{<0.001}$ & 0.30 & $\textbf{<0.001}$\\
+    log shucked & -0.24 & $\textbf{<0.001}$ & -0.24 & $\textbf{<0.001}$\\
+    sex infant & -0.01 & $\textbf{<0.001}$ & -0.01 & $\textbf{<0.001}$\\
+    log diameter & 0.15 & $\textbf{<0.001}$ & 0.15 & $\textbf{<0.001}$\\
+    sqrt height & 0.20 & $\textbf{<0.001}$ & 0.20 & $\textbf{<0.001}$\\
+    log length & -0.08 & $\textbf{0.007}$ & -0.08 & $\textbf{0.007}$\\
     \hline
-    Observations & 4175 &  & 1.45 & \\
-    $R^2/R^2$ adjusted & 0.647 / 0.647 & & 0.648 / 0.647 & \\
-    AIC & -10882.310 & & -10887.886 & \\
+    Observations & 4175 &  & 4175 & \\
+    $R^2/R^2$ adjusted & 0.629 / 0.629 & & 0.629 / 0.629 & \\
+    AIC & -10647.363 & & -10647.363 & \\
 \end{tabular}
 \end{center}
 
 \newpage
 
 \hypertarget{assumption-checking}{%
-\subsection{3.3 Assumption Checking}\label{assumption-checking}}
-
-\hypertarget{forward-residual-verse-fittedqq-plot}{%
-\subsubsection{Forward Residual Verse Fitted/QQ
-Plot}\label{forward-residual-verse-fittedqq-plot}}
-
-\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-4-1} \end{center}
-
-\hypertarget{backward-residual-verse-fittedqq-plot}{%
-\subsubsection{Backward Residual Verse Fitted/QQ
-Plot}\label{backward-residual-verse-fittedqq-plot}}
+\subsection{3.4 Assumption Checking}\label{assumption-checking}}
 
 \begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-5-1} \end{center}
 
-Assumption checks for both forward and backward models;
+Assumption checks for model;
 
 \begin{itemize}
      \item[$-$] \textbf{Linearity}: The residual vs fitted values plot indicates no obvious curvature for both thus the linearity assumption is satisfied.
@@ -216,20 +218,14 @@ Assumption checks for both forward and backward models;
 \hypertarget{results}{%
 \section{Results}\label{results}}
 
-Provided both the Forward and Backward approach resulted in the same
-adjusted \(R^2\), the RMSE and MAE were computed to justify which model
-was the better approach, shown in the graph below.
+We will compare the performance of our model to the full transformed
+model.
 
 \begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-8-1} \end{center}
 
-Thus, it is clearly seen that the Backward model is the better approach
-as it has a lower Residual Mean Square Error and Mean Absolute Error,
-however referring to appendix 4 there appears to be significant
-multicollinearity within the dataset which may reduce the precision of
-the estimate coefficients, lessening the statistical power. This was
-expected as living organisms tend to grow with age, hence the weight and
-height will all grow at a rapid rate til it eventually slows down at a
-certain point in the life.
+Thus, it is clearly seen that the model we got from aic is the better
+approach as it has a lower Residual Mean Square Error and Mean Absolute
+Error.
 
 \par
 
@@ -240,12 +236,7 @@ to zero, interpreting as to whether the abalone is adult or infant.
 
 \par
 
-Furthermore, with strong multicollinearity within the data set and all
-the variables are statistically significant the optimal solution was to
-remove some of the highly correlated independent variables of weight. It
-was found that the two more significant weight variables were shucked
-weight and whole weight, thus the other two were removed which led us to
-our final model as follows;
+Therefore our final model is as follows;
 
 \begin{align*}
   \widehat{\sqrt{log(rings)}} &= 1.330 + 0.297 log(whole) -0.243 log(shucked)\\
@@ -254,8 +245,10 @@ our final model as follows;
 \end{align*}
 
 Therefore, our model can predict the square root log of the number of
-rings with 62.8\% explainable variance using all the provided variables,
+rings with 62.9\% explainable variance using all the provided variables,
 making for a respectable regressive model.
+
+\par
 
 \hypertarget{discussionconclusion}{%
 \section{Discussion/Conclusion}\label{discussionconclusion}}
@@ -282,7 +275,7 @@ in the model. There is high co-linearity among the weight variables, and
 this reduces the weight and usefulness of each. In considering future
 research, it would be more profitable to forego one of these
 measurements in favour of another that would add more breadth to our
-profile of the abalone - i.e.~depth found or total volume. \pagebreak
+profile of the abalone - i.e.~depth found or total volume. \newpage
 
 \hypertarget{appendix}{%
 \section{Appendix}\label{appendix}}
@@ -295,7 +288,7 @@ profile of the abalone - i.e.~depth found or total volume. \pagebreak
 
 \begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-10-1} \end{center}
 
-\textbf{Appendix 3: Locations of where data was collected}
+\textbf{Appendix 3: Locations of where data was collected (\cite{article})}
 
 \begin{figure}[H]
     \begin{center}
@@ -324,6 +317,8 @@ profile of the abalone - i.e.~depth found or total volume. \pagebreak
   \urlstyle{rm}\Url}\fi
 \providecommand{\eprint}[2][]{\url{#2}}
 
+
+
 \bibitem[{Allaire \emph{et~al.}(2017)Allaire, {R Foundation}, Wickham, {Journal
   of Statistical Software}, Xie, Vaidyanathan, {Association for Computing
   Machinery}, Boettiger, {Elsevier}, Broman, Mueller, Quast, Pruim, Marwick,
@@ -346,6 +341,66 @@ Xie Y (2017).
 \newblock \emph{knitr: A General-Purpose Package for Dynamic Report Generation
   in R}.
 \newblock R package version 1.17, \urlprefix\url{https://yihui.name/knitr/}.
+
+\bibitem[{Karl~W. Broman(2015)}]{b}
+Karl~W. Broman (2015).
+\newblock R/qtlcharts: interactive graphics for quantitative trait locus
+  mapping.
+\newblock {\emph Genetics}, 199:359--361, \urlprefix\url{http://www.genetics.org/content/genetics/199/2/359.full.pdf}.
+
+\bibitem[{Dheeru Dua and Casey Graff(2017)}]{Dua:2019}
+Dheeru Dua and Casey Graff (2017).
+\newblock {UCI} machine learning repository, \urlprefix\url{https://archive.ics.uci.edu/ml/datasets/abalone}.
+
+\bibitem[{Dirk Eddelbuettel and James~Joseph Balamuta(August 2017)}]{PeerJ:Rcpp}
+Dirk Eddelbuettel and James~Joseph Balamuta (August 2017).
+\newblock Extending \textit{R} with \textit{C++}: A brief introduction to
+  \textit{Rcpp}.
+\newblock {\emph PeerJ Preprints}, 5:e3188v1, \urlprefix \url{https://doi.org/10.7287/peerj.preprints.3188v1}.
+
+\bibitem[{Max Kuhn(2020)}]{d}
+Max Kuhn (2020).
+\newblock {\emph caret: Classification and Regression Training}.
+\newblock R package version 6.0-86, \urlprefix \url{https://CRAN.R-project.org/package=caret}.
+
+\bibitem[{Daniel Lüdecke(2020)}]{e}
+Daniel Lüdecke (2020).
+\newblock {\emph sjPlot: Data Visualization for Statistics in Social Science}.
+\newblock R package version 2.8.6, \urlprefix \url{https://CRAN.R-project.org/package=sjPlot}.
+
+\bibitem[{Warwick \emph{et~al.}(1994) Nash, T.L. Sellers, S.R. Talbot, A.J. Cawthorn, and W.B. Ford}]{article}
+Warwick Nash, T.L. Sellers, S.R. Talbot, A.J. Cawthorn, and W.B. Ford (1994).
+\newblock 7he population biology of abalone (haliotis species) in tasmania.
+  i. blacklip abalone (h. rubra) from the north coast and islands of bass
+  strait.
+\newblock {\emph Sea Fisheries Division, Technical Report No}, 48, \urlprefix \url{https://www.researchgate.net/publication/287546509_7he_Population_Biology_of_Abalone_Haliotis_species_in_Tasmania_I_Blacklip_Abalone_H_rubra_from_the_North_Coast_and_Islands_of_Bass_Strait}
+
+\bibitem[{Barret Schloerke, Di~Cook, Joseph Larmarange, Francois Briatte, Moritz Marbach,
+  Edwin Thoen, Amos Elberg, and Jason Crowley (2020)}]{c}
+Barret Schloerke, Di~Cook, Joseph Larmarange, Francois Briatte, Moritz Marbach,
+  Edwin Thoen, Amos Elberg, and Jason Crowley(2020).
+\newblock {\emph GGally: Extension to 'ggplot2'}.
+\newblock R package version 2.0.0, \urlprefix \url{https://CRAN.R-project.org/package=GGally}.
+
+\bibitem[{Taiyun Wei and Viliam Simko(2017)}]{corrplot2017}
+Taiyun Wei and Viliam Simko (2017).
+\newblock {\emph R package "corrplot": Visualization of a Correlation Matrix}.
+\newblock (Version 0.84), \urlprefix \url{https://github.com/taiyun/corrplot}.
+
+\bibitem[{Hadley Wickham, Mara Averick, Jennifer Bryan, Winston Chang, Lucy~D'Agostino
+  McGowan, Romain François, Garrett Grolemund, Alex Hayes, Lionel Henry, Jim
+  Hester, Max Kuhn, Thomas~Lin Pedersen, Evan Miller, Stephan~Milton Bache,
+  Kirill Müller, Jeroen Ooms, David Robinson, Dana~Paige Seidel, Vitalie
+  Spinu, Kohske Takahashi, Davis Vaughan, Claus Wilke, Kara Woo, and Hiroaki
+  Yutani(2019).}]{a}
+Hadley Wickham, Mara Averick, Jennifer Bryan, Winston Chang, Lucy~D'Agostino
+  McGowan, Romain François, Garrett Grolemund, Alex Hayes, Lionel Henry, Jim
+  Hester, Max Kuhn, Thomas~Lin Pedersen, Evan Miller, Stephan~Milton Bache,
+  Kirill Müller, Jeroen Ooms, David Robinson, Dana~Paige Seidel, Vitalie
+  Spinu, Kohske Takahashi, Davis Vaughan, Claus Wilke, Kara Woo, and Hiroaki
+  Yutani (2019).
+\newblock Welcome to the {tidyverse}.
+\newblock {\emph Journal of Open Source Software}, 4(43):1686.
 
 \end{thebibliography}
 
