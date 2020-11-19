@@ -346,7 +346,7 @@ a = lm.beta(step.back.aic)
 a[c('log_whole', 'log_shucked', 'log_viscera', 'log_shell')]
 a[c('log_diam', 'log_length', 'sqrt_height', 'sex_i')]
 ```  
-
+\vspace{2mm}
 \begin{tabular}{c c c c}
   log whole & log shucked & log viscera & log shell \\
   $1.4790451$ & $-1.5000279$ & $-0.1885621$ & $0.8269786$ \\
@@ -354,7 +354,7 @@ a[c('log_diam', 'log_length', 'sqrt_height', 'sex_i')]
   log diam & log length & sqrt height & sex infant \\
   $0.19408468$ & $-0.19821088$ & $0.06175294$ & $-0.06326012$
 \end{tabular}
-
+\vspace{2mm}
 Thus the viscera weight and shell weight vere two were removed which led us to our final model as follows; 
 
 \begin{align*}

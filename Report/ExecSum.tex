@@ -51,6 +51,7 @@ estimates for abalone.
 
 % initially we use doi so keep for backwards compatibility
 % new name is doi_footer
+\doifooter{\url{https://github.sydney.edu.au/jary8982/M09B_early_5.git}}
 
 \pinpfootercontents{pinp Vignette}
 
@@ -76,12 +77,12 @@ across various ecosystems. As a sought after commodity within the
 fishing industry, this is especially true of Abalone. However, the
 classical method for determining an abalone's age is arduous and time
 inefficient; counting the rings in a specially prepared shell under a
-microscope. We therefore aim to find a technique for estimating an
-abalone's age using only physical attributes which are easily and
-quickly measured. We will construct a multiple regression model in order
-to predict the number of rings an abalone has, and evaluate whether this
-model can effectively predict observed values and would therefore have
-any utility when applied to new observations.
+microscope (\cite{Dua:2019}). We therefore aim to find a technique for
+estimating an abalone's age using only physical attributes which are
+easily and quickly measured. We will construct a multiple regression
+model in order to predict the number of rings an abalone has, and
+evaluate whether this model can effectively predict observed values and
+would therefore have any utility when applied to new observations.
 
 \hypertarget{data-set}{%
 \section{Data Set}\label{data-set}}
@@ -179,7 +180,7 @@ approach included all variables, shown in the table below.
     log viscera & -0.03 & $\textbf{<0.001}$ & -0.02 & $\textbf{<0.001}$\\
     sqrt height & 0.13 & $\textbf{0.007}$ & 0.12 & $\textbf{0.012}$\\
     log diameter &  & & 0.07 & $\textbf{0.005}$\\
-     log length &  & & -0.08 & $\textbf{0.005}$\\
+    log length &  & & -0.08 & $\textbf{0.005}$\\
     \hline
     Observations & 4175 &  & 1.45 & \\
     $R^2/R^2$ adjusted & 0.647 / 0.647 & & 0.648 / 0.647 & \\
@@ -244,8 +245,21 @@ Furthermore, with strong multicollinearity within the data set and all
 the variables are statistically significant the optimal solution was to
 remove some of the highly correlated independent variables of weight. It
 was found that the two more significant weight variables were shucked
-weight and whole weight, thus the other two were removed which led us to
-our final model as follows;
+weight and whole weight, based on the standardized regression
+coefficients, shown below.
+
+\vspace{2mm}
+\begin{tabular}{c c c c}
+  log whole & log shucked & log viscera & log shell \\
+  $1.4790451$ & $-1.5000279$ & $-0.1885621$ & $0.8269786$ \\
+\hline
+  log diam & log length & sqrt height & sex infant \\
+  $0.19408468$ & $-0.19821088$ & $0.06175294$ & $-0.06326012$
+\end{tabular}
+\vspace{2mm}
+
+Thus the viscera weight and shell weight vere two were removed which led
+us to our final model as follows;
 
 \begin{align*}
   \widehat{\sqrt{log(rings)}} &= 1.330 + 0.297 log(whole) -0.243 log(shucked)\\
@@ -260,42 +274,34 @@ making for a respectable regressive model.
 \hypertarget{discussionconclusion}{%
 \section{Discussion/Conclusion}\label{discussionconclusion}}
 
-Conducting this analysis was fruitful. Our results demonstrate that we
-can indeed construct a model that will approximate an Abalone's age
-without needing any arduous ring-counting. Such a tool is very useful
-for our introductory scenario. When monitoring large marine ecosystems,
-research time is better spent collecting and analysing observations
-rather than counting rings.
+Conducting this analysis was fruitful, where the results demonstrated
+that we can indeed construct a model that will approximate an Abalone's
+age without needing any arduous ring-counting. Such a tool is very
+useful for our introductory scenario, when monitoring large marine
+ecosystems, in which, research time is better spent collecting and
+analysing observations rather than counting rings.
 
-\par
+\hypertarget{limitations}{%
+\subsection{5.1 Limitations}\label{limitations}}
 
-However, we must acknowledge a limitation in our data. Our data only
-pertains to \emph{Haliotis} \emph{Rubra}, and so we cannot claim that
-our model accounts for species, or will even perform generally among
-Haliotes. Any conservational or environmental inferences will be limited
-as such.
-
-\par
-
-Additionally, the provided variables were not necessarily equally useful
-in the model. There is high co-linearity among the weight variables, and
-this reduces the weight and usefulness of each. In considering future
-research, it would be more profitable to forego one of these
-measurements in favour of another that would add more breadth to our
-profile of the abalone - i.e.~depth found or total volume. \pagebreak
+\begin{itemize}
+    \item[$-$]  Our data only pertains to \textit{Haliotis Rubra}, and so we cannot claim that our model accounts for species, or will even perform generally among Haliotes. Any conservational or environmental inferences will be limited as such. 
+    \item[$-$] The provided variables were not necessarily equally useful in the model. There is high co-linearity among the weight variables, and this reduces the weight and usefulness of each. In considering future research, it would be more profitable to forego one of these measurements in favour of another that would add more breadth to our profile of the abalone - i.e. depth found or total volume.
+    \item[$-$] The data was only collected around the Tasman Sea rendering the model to potentially become unreliable in differing locations as they are found all over the globe, where factors from the surrounding environment migth influence the age.
+\end{itemize}
 
 \hypertarget{appendix}{%
 \section{Appendix}\label{appendix}}
 
 \textbf{Appendix 1: Correlation matrix of initial dataset}
 
-\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-9-1} \end{center}
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-10-1} \end{center}
 
 \textbf{Appendix 2: Correlation matrix of transformed variables}
 
-\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-10-1} \end{center}
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-11-1} \end{center}
 
-\textbf{Appendix 3: Locations of where data was collected}
+\textbf{Appendix 3: Locations of where data was collected (\cite{article})}
 
 \begin{figure}[H]
     \begin{center}
@@ -303,9 +309,11 @@ profile of the abalone - i.e.~depth found or total volume. \pagebreak
     \end{center}
 \end{figure}
 
+\newpage
+
 \textbf{Appendix 4: Correlation Matrix}
 
-\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-11-1} \end{center}
+\begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-12-1} \end{center}
 
 %\showmatmethods
 
@@ -323,6 +331,8 @@ profile of the abalone - i.e.~depth found or total volume. \pagebreak
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 \providecommand{\eprint}[2][]{\url{#2}}
+
+
 
 \bibitem[{Allaire \emph{et~al.}(2017)Allaire, {R Foundation}, Wickham, {Journal
   of Statistical Software}, Xie, Vaidyanathan, {Association for Computing
@@ -346,6 +356,66 @@ Xie Y (2017).
 \newblock \emph{knitr: A General-Purpose Package for Dynamic Report Generation
   in R}.
 \newblock R package version 1.17, \urlprefix\url{https://yihui.name/knitr/}.
+
+\bibitem[{Karl~W. Broman(2015)}]{b}
+Karl~W. Broman (2015).
+\newblock R/qtlcharts: interactive graphics for quantitative trait locus
+  mapping.
+\newblock {\emph Genetics}, 199:359--361, \urlprefix\url{http://www.genetics.org/content/genetics/199/2/359.full.pdf}.
+
+\bibitem[{Dheeru Dua and Casey Graff(2017)}]{Dua:2019}
+Dheeru Dua and Casey Graff (2017).
+\newblock {UCI} machine learning repository, \urlprefix\url{https://archive.ics.uci.edu/ml/datasets/abalone}.
+
+\bibitem[{Dirk Eddelbuettel and James~Joseph Balamuta(August 2017)}]{PeerJ:Rcpp}
+Dirk Eddelbuettel and James~Joseph Balamuta (August 2017).
+\newblock Extending \textit{R} with \textit{C++}: A brief introduction to
+  \textit{Rcpp}.
+\newblock {\emph PeerJ Preprints}, 5:e3188v1, \urlprefix \url{https://doi.org/10.7287/peerj.preprints.3188v1}.
+
+\bibitem[{Max Kuhn(2020)}]{d}
+Max Kuhn (2020).
+\newblock {\emph caret: Classification and Regression Training}.
+\newblock R package version 6.0-86, \urlprefix \url{https://CRAN.R-project.org/package=caret}.
+
+\bibitem[{Daniel Lüdecke(2020)}]{e}
+Daniel Lüdecke (2020).
+\newblock {\emph sjPlot: Data Visualization for Statistics in Social Science}.
+\newblock R package version 2.8.6, \urlprefix \url{https://CRAN.R-project.org/package=sjPlot}.
+
+\bibitem[{Warwick \emph{et~al.}(1994) Nash, T.L. Sellers, S.R. Talbot, A.J. Cawthorn, and W.B. Ford}]{article}
+Warwick Nash, T.L. Sellers, S.R. Talbot, A.J. Cawthorn, and W.B. Ford (1994).
+\newblock 7he population biology of abalone (haliotis species) in tasmania.
+  i. blacklip abalone (h. rubra) from the north coast and islands of bass
+  strait.
+\newblock {\emph Sea Fisheries Division, Technical Report No}, 48, \urlprefix \url{https://www.researchgate.net/publication/287546509_7he_Population_Biology_of_Abalone_Haliotis_species_in_Tasmania_I_Blacklip_Abalone_H_rubra_from_the_North_Coast_and_Islands_of_Bass_Strait}
+
+\bibitem[{Barret Schloerke, Di~Cook, Joseph Larmarange, Francois Briatte, Moritz Marbach,
+  Edwin Thoen, Amos Elberg, and Jason Crowley (2020)}]{c}
+Barret Schloerke, Di~Cook, Joseph Larmarange, Francois Briatte, Moritz Marbach,
+  Edwin Thoen, Amos Elberg, and Jason Crowley(2020).
+\newblock {\emph GGally: Extension to 'ggplot2'}.
+\newblock R package version 2.0.0, \urlprefix \url{https://CRAN.R-project.org/package=GGally}.
+
+\bibitem[{Taiyun Wei and Viliam Simko(2017)}]{corrplot2017}
+Taiyun Wei and Viliam Simko (2017).
+\newblock {\emph R package "corrplot": Visualization of a Correlation Matrix}.
+\newblock (Version 0.84), \urlprefix \url{https://github.com/taiyun/corrplot}.
+
+\bibitem[{Hadley Wickham, Mara Averick, Jennifer Bryan, Winston Chang, Lucy~D'Agostino
+  McGowan, Romain François, Garrett Grolemund, Alex Hayes, Lionel Henry, Jim
+  Hester, Max Kuhn, Thomas~Lin Pedersen, Evan Miller, Stephan~Milton Bache,
+  Kirill Müller, Jeroen Ooms, David Robinson, Dana~Paige Seidel, Vitalie
+  Spinu, Kohske Takahashi, Davis Vaughan, Claus Wilke, Kara Woo, and Hiroaki
+  Yutani(2019).}]{a}
+Hadley Wickham, Mara Averick, Jennifer Bryan, Winston Chang, Lucy~D'Agostino
+  McGowan, Romain François, Garrett Grolemund, Alex Hayes, Lionel Henry, Jim
+  Hester, Max Kuhn, Thomas~Lin Pedersen, Evan Miller, Stephan~Milton Bache,
+  Kirill Müller, Jeroen Ooms, David Robinson, Dana~Paige Seidel, Vitalie
+  Spinu, Kohske Takahashi, Davis Vaughan, Claus Wilke, Kara Woo, and Hiroaki
+  Yutani (2019).
+\newblock Welcome to the {tidyverse}.
+\newblock {\emph Journal of Open Source Software}, 4(43):1686.
 
 \end{thebibliography}
 
