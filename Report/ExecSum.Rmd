@@ -127,7 +127,7 @@ filter(height < 0.5)
 # Introduction 
 Marine biologists and conservationists often study the age and growth patterns of a species in order to understand its demographics in and across various ecosystems.
 As a sought after commodity within the fishing industry, this is especially true of Abalone.
-However, the classical method for determining an abalone's age is arduous and time inefficient; counting the rings in a specially prepared shell under a microscope.
+However, the classical method for determining an abalone's age is arduous and time inefficient; counting the rings in a specially prepared shell under a microscope (\cite{Dua:2019}).
 We therefore aim to find a technique for estimating an abalone's age using only physical attributes which are easily and quickly measured. We will construct a multiple regression model in order to predict the number of rings an abalone has, and evaluate whether this model can effectively predict observed values and would therefore have any utility when applied to new observations.
 
 # Data Set
@@ -384,7 +384,7 @@ GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data),
     upper = list(continuous = wrap("cor", size = 1))) + theme_bw(base_size = 2)
 ```
 
-\textbf{Appendix 3: Locations of where data was collected}
+\textbf{Appendix 3: Locations of where data was collected (\cite{article})}
 
 \begin{figure}[H]
     \begin{center}
