@@ -57,7 +57,7 @@ secnumdepth: 3
 skip_final_break: false
 
 # Customize footer, eg by referencing the vignette
-footer_contents: "pinp Vignette"
+footer_contents: "Data2002 Group Project"
 
 # Optional: Enable a 'Draft' watermark on the document
 #watermark: true
@@ -134,7 +134,7 @@ We therefore aim to find a technique for estimating an abalone's age using only 
 
 # Data Set
 This data pertains to _Haliotis_ _Rubra_, an Australian species of abalone found predominantly in cold waters, such as off the coast of Tasmania. 
-The relevant data were originally collected by _the Marine Resources Division in Taroona, Tasmania_ to explore _neural network_ techniques for estimating the age of abalone. The data were made available by the University of California Irvine Machine Learning Repository. The dataset contains 4177 observations upon 9 different variables, and it contains no missing values. Each variable describes some physical property - a weight, dimension, sex, ring count - of the observed abalone.
+The relevant data were originally collected by _the Marine Resources Division in Taroona, Tasmania_ to explore neural network techniques for estimating the age of abalone. The data were made available by the University of California Irvine Machine Learning Repository(\cite{Dua:2019}). The dataset contains 4177 observations upon 9 different variables, and it contains no missing values. Each variable describes some physical property - a weight, dimension, sex, ring count - of the observed abalone.
 
 ## 2.1 Variables  
 \begin{center}
@@ -143,23 +143,23 @@ The relevant data were originally collected by _the Marine Resources Division in
 \textbf{Name} & \textbf{Type} & \textbf{Description} \\
 \hline
 
-Sex & factor & male, female or infant \\
+Sex & Factor & Male, female or infant \\
 \hline
-Length (mm) & continuous & longest shell measurement \\
+Length (mm) & Continuous & Longest shell measurement \\
 \hline
-Diameter (mm) & continuous & perpendicular to length \\
+Diameter (mm) & Continuous & Perpendicular to length \\
 \hline
-Height (mm) & continuous & with meat in shell \\
+Height (mm) & Continuous & With meat in shell \\
 \hline
-Whole Weight (g) & continuous & whole abalone \\
+Whole Weight (g) & Continuous & Whole abalone \\
 \hline
-Shucked Weight (g) & continuous & weight of meat \\
+Shucked Weight (g) & Continuous & Weight of meat \\
 \hline
-Viscera Weight (g) & continuous & gut weight (after bleeding) \\
+Viscera Weight (g) & Continuous & Gut weight (after bleeding) \\
 \hline
-Shell Weight (g) & continuous & after being dried \\
+Shell Weight (g) & Continuous & After being dried \\
 \hline
-Rings & integer & number of rings. +1.5 gives age in years \\
+Rings & Integer & Number of rings. +1.5 gives age in years \\
 \hline
 \end{tabular}
 \end{center}
@@ -168,7 +168,7 @@ Rings & integer & number of rings. +1.5 gives age in years \\
 \newpage
 ## 2.2 Outliers  
 
-In exploring the different variables there appeared to be two values identified as clear outliers in the height variable. Thus, concluding  they are likely to be errors induced when entering the data and will be filtered out. 
+Initial data exploration reveals two clear anomalies in the height variable. These two observations are so far from the range of all other 4175 observed values that they are considered to be erroneous, and are discarded from the dataset.
 
 ```{r, echo=FALSE, fig.width=3, fig.height=1, cache=TRUE}
 ggplot(unfiltered) + aes(x = height) + geom_boxplot(color = "#00AFBB") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
@@ -178,7 +178,7 @@ ggplot(unfiltered) + aes(x = height) + geom_boxplot(color = "#00AFBB") + theme(t
 
 ## 3.1 Transformations
 
-Prior to selecting an appropriate model, with reference to appendix 1, clearly the independent variables do not possess a linear relationship with number of rings. The variables clearly rise rapidly and reach a plateau, thus it was found best to perform log transformations of the variable rings, length, diameter, weight shucked, weight viscera, weight shell and a square root transformation was applied to height and log of rings. With reference to appendix 2, the data set now adopts a linear relationship with the predictive variable, allowing for a linear regressive model to work appropriately. 
+Prior to selecting an appropriate model, we must acknowledge that the observed variables do not demonstrate a linear relationship with the observed number of rings _(Appendix 1)_, and we cannot consider sexual maturity in its current state as a ternary factor. Due to the nature of the observed curves, the ideal transformations for the predictor variables were as follows: Log transformations for length, diameter, and all the weights, and a square root transformation to height.  Transforming the predicted variable (rings) to the square root of its logarithm proved ideal. Each predictor variable now adopts a linear relationship with the predictive variable _(Appendix 2)_, allowing for a linear regressive model to work appropriately. Additionally, the sexual maturity factor was encoded using a contrast matrix.
 
 ```{r, echo=FALSE, include = FALSE}
 res = model.matrix(~sex, data)
@@ -209,7 +209,7 @@ transformed = numericised_sex %>% mutate(log_whole = log(weight_whole),
 
 ## 3.2 Model Selection
 
-Provided the linearity assumptions with respect to the dependent variable are satisfied, a model search was justified by the Akaike information criterion through a backward and forward variable selection. After conducting the relevant search it was found that the forward model did not include log of diameter and log of length while the backward approach included all variables, shown in the table below. 
+Having conducted our transformations, models could now be constructed. Two models were constructed; one using forward stepping variable selection, and the other using backward stepping variable selection. Both of these models were evaluated considering their $R^2$ and AIC values. The produced models were remarkably similar in regard to the above criteria, and the only notable difference between them is the omission of diameter and length from the forward model. The produced models are shown in the table below. 
 
 ```{r, echo= FALSE, include=FALSE, warning = FALSE, fig.width=10, fig.height=5, cache=TRUE}
 library(magrittr)
@@ -256,7 +256,7 @@ sjPlot::tab_model(step.fwd.aic, step.back.aic, show.ci = FALSE,show.aic = TRUE,d
 \newpage
 ## 3.3 Assumption Checking 
 
-### Forward Residual Verse Fitted/QQ Plot
+### Forward Residual vs Fitted/QQ Plot
 ```{r, warning = FALSE, echo = FALSE, fig.width=3, fig.height=1.7, cache=TRUE}
 # autoplot(step.fwd.aic,which=1)
 x = transformed
@@ -266,12 +266,12 @@ forward_plot1 = ggplot(x, aes(x = lfitted ,y = lresid)) + geom_jitter(size=0.1, 
 
 # qqnorm(step.fwd.aic$residuals)
 # qqline(step.fwd.aic$residuals)
-forward_plot2 = ggplot(step.fwd.aic, aes(sample = step.fwd.aic$residuals)) + stat_qq(alpha=0.5, size=0.5, shape=1, color = "black") + stat_qq_line(colour="blue") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
+forward_plot2 = ggplot(step.fwd.aic, aes(sample = step.fwd.aic$residuals)) + stat_qq(alpha=0.5, size=0.5, shape=1, color = "black") + stat_qq_line(colour="blue") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1)) + labs(x = "Theoretical", y = "Sample")
 
 gridExtra::grid.arrange(forward_plot1, forward_plot2, ncol=2)
 ```
 
-### Backward Residual Verse Fitted/QQ Plot
+### Backward Residual vs Fitted/QQ Plot
 ```{r, warning = FALSE, echo = FALSE, fig.width=3, fig.height=1.7, cache=TRUE}
 # autoplot(step.fwd.aic,which=1)
 x = transformed
@@ -280,27 +280,26 @@ back_plot1 = ggplot(x, aes(x = lfitted ,y = lresid)) + geom_jitter(size=0.1, alp
   labs(x = "Fitted", y = "Residuals") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
 
 # autoplot(step.fwd.aic,which=2)
-back_plot2 = ggplot(step.back.aic, aes(sample = step.back.aic$residuals)) + stat_qq(alpha=0.5, size=0.5, shape=1, color = "black") + stat_qq_line(colour="blue") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1))
+back_plot2 = ggplot(step.back.aic, aes(sample = step.back.aic$residuals)) + stat_qq(alpha=0.5, size=0.5, shape=1, color = "black") + stat_qq_line(colour="blue") + theme(text=element_text(size=6), panel.background = element_blank(), panel.grid.major = element_line(colour="white"), panel.grid.minor = element_line(colour="white"), panel.border = element_rect(colour="steelblue", fill=NA, size=1)) + labs(x = "Theoretical", y = "Sample")
 # qqnorm(step.back.aic$residuals)
 # qqline(step.back.aic$residuals)
 
 gridExtra::grid.arrange(back_plot1, back_plot2, ncol=2)
 ```
 
-Assumption checks for both forward and backward models;
 
-\begin{itemize}
-	 \item[$-$] \textbf{Linearity}: The residual vs fitted values plot indicates no obvious curvature for both thus the linearity assumption is satisfied.
-	 \item[$-$] \textbf{Independence}: Referencing to appendix 3 the data was collected over 5 different regions in the Tasman Sea, hence there will be independence between the observations from the differing locations that the data was pulled from.
-	 \item[$-$] \textbf{Homoskedasticity}: The residuals do not appear to be fanning out or changing over the range of the fitted values for both, thus the constant error variance assumption is met.
-	 \item[$-$] \textbf{Normality}: The normality assumption is at least approximately satisfied. In the QQ plot, the points are reasonably close to the diagonal line, however the sample size is large enough to rely upon the central limit theorem ensuring the inferences are approximately valid.
-\end{itemize}
+We must state and justify our assumptions - for both models - to validate any inferences made in our results.
+
+- __Linearity__: The residual plot displays no obvious curvature for either model, thus the linearity assumption is satisfied.
+- __Independence__: The data were collected across 5 different regions in the Tasman Sea \textit{(Appendix 3)}, with no systematic or intentional collection grouping. Granted these facts, there is no reason to believe there is any dependence between observations. Hence, independence can reasonably be assumed. 
+- __Homoskedasticity__: For both models, the residuals do not appear to be fanning out or changing over the range of fitted values. Thus the constant error variance assumption is met.
+- __Normality__: The normality assumption is at least approximately satisfied. For the QQ plot of each model, the points are reasonably close to the diagonal line. Regardless, the sample size is large enough to rely upon the central limit theorem. 
+
+
 
 # Results 
 
-
-Provided both the Forward and Backward approach resulted in the same adjusted $R^2$, the RMSE and MAE were computed to justify which model was the better approach, shown in the graph below. 
-
+Since the models constructed using the forward and backward approach share the same adjusted $R^2$, the RMSE and MAE were computed for each in order to determine and justify the better model. Graphs are shown below.
 
 ```{r, warning = FALSE}
 set.seed(1)
@@ -337,9 +336,11 @@ plot2 = ggplot(results, metric = "MAE") + labs(y = "MAE")+ theme(text=element_te
 gridExtra::grid.arrange(plot1, plot2, ncol=2)
 ```
 
-Thus, it is clearly seen that the Backward model is the better approach as it has a lower Residual Mean Square Error and Mean Absolute Error, however referring to appendix 4 there appears to be significant multicollinearity within the dataset which may reduce the precision of the estimate coefficients, lessening the statistical power. This was expected as living organisms tend to grow with age, hence the weight and height will all grow at a rapid rate til it eventually slows down at a certain point in the life.\par 
-  Additionally, the p values for the model all are statistically significant except the sex factor where p-value of sex_f not providing enough evidence to reject the null hypothesis that coefficient is equal to zero, interpreting as to whether the abalone is adult or infant. \par
-  Furthermore, with strong multicollinearity within the data set and all the variables are statistically significant the optimal solution was to remove some of the highly correlated independent variables of weight. It was found that the two more significant weight variables were shucked weight and whole weight, based on the standardized regression coefficients, shown below. 
+It is evident that the backward model is the better model, as it has a lower Residual Mean Square Error and Mean Absolute Error. 
+It is worth noting that the p-values for all the original variables are statistically significant, excepting one of the sexual maturity factors produced from the dummy coding contrast matrix. The p-value for `sex_f` was consistent with the null hypothesis that the __gender__ of the abalone is immaterial, while `sex_i` was significant, indicating that the sexual __maturity__ of the abalone was meaningful. \par
+It must be conceded that there is apparent multicollinearity within the dataset _(Appendix 4)_; which may reduce the precision of the estimate coefficients and lessen the statistical power of the model. This multicollinearity is to be expected. Living organisms tend to grow physically as they age, with a rate that decreases over time. Naturally, our measured values display that trend.\par 
+  
+  It is a challenge to address multicollinearity within a data set where all the variables are significant. The optimal solution is to omit collinear variables which are already well represented by similar measurements. In our specific case, this was a number of the weight variables. The two more significant weight variables - according to the standardized regression coefficients - were shucked weight and whole weight;
 
 ```{r, include=FALSE}
 a = lm.beta(step.back.aic)
@@ -355,7 +356,7 @@ a[c('log_diam', 'log_length', 'sqrt_height', 'sex_i')]
   $0.19408468$ & $-0.19821088$ & $0.06175294$ & $-0.06326012$
 \end{tabular}
 \vspace{2mm}
-Thus the viscera weight and shell weight vere two were removed which led us to our final model as follows; 
+Thus the viscera weight and shell weight were ignored in our final model; 
 
 \begin{align*}
   \widehat{\sqrt{log(rings)}} &= 1.330 + 0.297 log(whole) -0.243 log(shucked)\\
@@ -363,17 +364,15 @@ Thus the viscera weight and shell weight vere two were removed which led us to o
   & + 0.205\sqrt{height}-0.013 Sex_{infant}
 \end{align*}
 
-Therefore, our model can predict the square root log of the number of rings with 62.8% explainable variance using all the provided variables, making for a respectable regressive model.
+Our model can predict the square root of the log of the number of rings with 62.8% explainable variance when using all the provided variables, making for a respectable regressive model.
 
-# Discussion/Conclusion
-Conducting this analysis was fruitful, where the results demonstrated that we can indeed construct a model that will approximate an Abalone's age without needing any arduous ring-counting. Such a tool is very useful for our introductory scenario, when monitoring large marine ecosystems, in which, research time is better spent collecting and analysing observations rather than counting rings.
+# Discussion and Conclusion
+We have constructed a model that will approximate an abalone's age from easily measured attributes - a useful tool when monitoring large marine ecosystems, where research time is far better spent collecting and analysing observations than counting rings.
 
 ## 5.1 Limitations
-\begin{itemize}
-    \item[$-$]  Our data only pertains to \textit{Haliotis Rubra}, and so we cannot claim that our model accounts for species, or will even perform generally among Haliotes. Any conservational or environmental inferences will be limited as such. 
-    \item[$-$] The provided variables were not necessarily equally useful in the model. There is high co-linearity among the weight variables, and this reduces the weight and usefulness of each. In considering future research, it would be more profitable to forego one of these measurements in favour of another that would add more breadth to our profile of the abalone - i.e. depth found or total volume.
-    \item[$-$] The data was only collected around the Tasman Sea rendering the model to potentially become unreliable in differing locations as they are found all over the globe, where factors from the surrounding environment migth influence the age.
-\end{itemize}
+- Our data only pertains to _Haliotis Rubra_. The model does not account for species, and cannot claim to perform generally among Haliotes. Any conservational or environmental inferences are thus limited. 
+- As noted above, there is high collinearity among the weight variables, and together this reduces the usefulness of each. It would perhaps be more profitable to forego one of these measurements in favour of another that would add more breadth to our profile of the abalone.
+- The data were only collected from waters surrounding Tasmania _(Appendix 3)_. Although Blacklip Abalone __is__ prevalent in these waters, they are found in coastal waters reaching all the way from lower NSW to lower WA. This restricts the usefulness of the model, since it can only be used with confidence for Abalone in Tasmanian waters - a portion of a much larger population.
 
 
 # Appendix
@@ -402,7 +401,7 @@ GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data),
     upper = list(continuous = wrap("cor", size = 1))) + theme_bw(base_size = 2)
 ```
 
-\textbf{Appendix 3: Locations of where data was collected (\cite{article})}
+\textbf{Appendix 3: Data Collection Sites (\cite{article})}
 \begin{figure}[H]
     \begin{center}
     \includegraphics[width=0.35\textwidth, height=2in]{Independence} 
@@ -412,7 +411,7 @@ GGally::ggpairs(transformed, columns = 1:10, lower = list(continuous = fn_data),
 \newpage
 
 \textbf{Appendix 4: Correlation Matrix}
-```{r, warning = FALSE, fig.width=4, fig.height=4, cache=TRUE}
+```{r, warning = FALSE, fig.width=4, fig.height=2.75, cache=TRUE}
 corr <- round(cor(transformed), 2)
 ggcorrplot(corr, method = "square") 
 ```
