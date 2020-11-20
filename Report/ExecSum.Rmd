@@ -19,7 +19,7 @@ doi_footer: https://github.sydney.edu.au/jary8982/M09B_early_5.git
 
 # Abstract
 abstract: |
-  In this report, we investigate whether the age of _Haliotis_ _Rubra_ _(Blacklip_ _Abalone)_ can be estimated from external physical attributes. We constructed and evaluated two multiple linear regression models using the Akaike Information Criterion (AIC). After refinement of the selected model, we found that given two weights, three dimensions, and the sexual maturity of an ablone, we could explain 62.8% of the the variance in our target variable. Provided these measurements, predictions could in turn be untransformed to generate age estimates for abalone.
+  In this report, we investigate whether the age of _Haliotis_ _Rubra_ _(Blacklip_ _Abalone)_ can be estimated from external physical attributes. We constructed and evaluated two multiple linear regression models using the Akaike Information Criterion (AIC). After refinement of the selected model, we found that given two weights, three dimensions, and the sexual maturity of an abalone, we could explain 62.8% of the the variance in our target variable. Provided these measurements, predictions could in turn be untransformed to generate age estimates for abalone.
 
 # Optional: One or more keywords
 #keywords:
