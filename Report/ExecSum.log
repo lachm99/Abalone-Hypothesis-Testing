@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.19)  20 NOV 2020 13:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.11.19)  20 NOV 2020 13:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1849,7 +1849,7 @@ Package pdftex.def Info: ExecSum_files/figure-latex/unnamed-chunk-8-1.pdf  used
  on input line 247.
 (pdftex.def)             Requested size: 234.87692pt x 108.40472pt.
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 2
-54.
+53.
 (c:/Users/lachl/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1859,7 +1859,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
 
 Package hyperref Warning: The anchor of a bookmark and its parent's must not
-(hyperref)                be the same. Added a new anchor on input line 310.
+(hyperref)                be the same. Added a new anchor on input line 309.
 
 [2 <./ExecSum_files/figure-latex/unnamed-chunk-4-1.pdf> <./ExecSum_files/figure
 -latex/unnamed-chunk-5-1.pdf> <./ExecSum_files/figure-latex/unnamed-chunk-8-1.p
@@ -1870,7 +1870,7 @@ File: ExecSum_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type pdf)
 
 <use ExecSum_files/figure-latex/unnamed-chunk-10-1.pdf>
 Package pdftex.def Info: ExecSum_files/figure-latex/unnamed-chunk-10-1.pdf  use
-d on input line 338.
+d on input line 337.
 (pdftex.def)             Requested size: 180.67455pt x 180.67455pt.
 <ExecSum_files/figure-latex/unnamed-chunk-11-1.pdf, id=138, 180.675pt x 180.675
 pt>
@@ -1878,14 +1878,14 @@ File: ExecSum_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (type pdf)
 
 <use ExecSum_files/figure-latex/unnamed-chunk-11-1.pdf>
 Package pdftex.def Info: ExecSum_files/figure-latex/unnamed-chunk-11-1.pdf  use
-d on input line 342.
+d on input line 341.
 (pdftex.def)             Requested size: 180.67455pt x 180.67455pt.
 LaTeX Font Info:    Font shape `T1/mdbch/b/it' will be
-(Font)              scaled to size 8.64006pt on input line 344.
+(Font)              scaled to size 8.64006pt on input line 343.
 <Independence.png, id=141, 497.86pt x 544.0325pt>
 File: Independence.png Graphic file (type png)
 <use Independence.png>
-Package pdftex.def Info: Independence.png  used on input line 348.
+Package pdftex.def Info: Independence.png  used on input line 347.
 (pdftex.def)             Requested size: 176.99602pt x 144.54147pt.
 <ExecSum_files/figure-latex/unnamed-chunk-12-1.pdf, id=143, 289.08pt x 198.7425
 pt>
@@ -1893,45 +1893,45 @@ File: ExecSum_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type pdf)
 
 <use ExecSum_files/figure-latex/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: ExecSum_files/figure-latex/unnamed-chunk-12-1.pdf  use
-d on input line 356.
+d on input line 355.
 (pdftex.def)             Requested size: 289.07928pt x 198.742pt.
 
-Overfull \hbox (42.98103pt too wide) in paragraph at lines 356--356
+Overfull \hbox (42.98103pt too wide) in paragraph at lines 355--355
  [] 
  []
 
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 385.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 384.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 7.06396pt on input line 385.
+(Font)              scaled to size 7.06396pt on input line 384.
 LaTeX Font Info:    Font shape `OT1/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 387.
+(Font)              scaled to size 7.68005pt on input line 386.
 LaTeX Font Info:    Font shape `OML/mdbch/m/it' will be
-(Font)              scaled to size 7.68005pt on input line 387.
+(Font)              scaled to size 7.68005pt on input line 386.
 LaTeX Font Info:    Font shape `OMS/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 387.
+(Font)              scaled to size 7.68005pt on input line 386.
 LaTeX Font Info:    Font shape `OMX/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 387.
+(Font)              scaled to size 7.68005pt on input line 386.
 LaTeX Font Info:    Font shape `OML/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 387.
+(Font)              scaled to size 7.68005pt on input line 386.
 LaTeX Font Info:    Font shape `MDA/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 387.
+(Font)              scaled to size 7.68005pt on input line 386.
 LaTeX Font Info:    Font shape `MDB/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 387.
+(Font)              scaled to size 7.68005pt on input line 386.
 
-Underfull \hbox (badness 1024) in paragraph at lines 427--432
+Underfull \hbox (badness 1024) in paragraph at lines 426--431
 \T1/phv/m/n/8 (+20) (1994).  7he pop-u-la-tion bi-ol-ogy of abalone (hali-o-tis
  species) in tas-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 427--432
+Underfull \hbox (badness 10000) in paragraph at lines 426--431
 [][][]$\T1/phv/m/n/8 (+20) https : / / www . researchgate . net / publication /
  287546509 _ 7he _ Population _
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 427--432
+Underfull \hbox (badness 10000) in paragraph at lines 426--431
 \T1/phv/m/n/8 (+20) Biology _ of _ Abalone _ Haliotis _ species _ in _ Tasmania
  _ I _ Blacklip _ Abalone _
  []
@@ -1950,11 +1950,11 @@ Package rerunfilecheck Info: File `ExecSum.out' has not changed.
 (rerunfilecheck)             Checksum: ED25DC8AA624A3BB61849FC57E1647D9;815.
  ) 
 Here is how much of TeX's memory you used:
- 27255 strings out of 481433
- 500032 string characters out of 5918819
+ 27251 strings out of 481433
+ 499992 string characters out of 5918819
  857784 words of memory out of 5000000
  43079 multiletter control sequences out of 15000+600000
- 643789 words of font info for 319 fonts, out of 8000000 for 9000
+ 643554 words of font info for 316 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  122i,15n,124p,450b,650s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/lachl/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.en
@@ -1977,7 +1977,7 @@ pfb><c:/Users/lachl/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/helvetic
 /uhvbo8a.pfb><c:/Users/lachl/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw
 /helvetic/uhvr8a.pfb><c:/Users/lachl/AppData/Roaming/TinyTeX/texmf-dist/fonts/t
 ype1/urw/helvetic/uhvro8a.pfb>
-Output written on ExecSum.pdf (3 pages, 1765723 bytes).
+Output written on ExecSum.pdf (3 pages, 1765740 bytes).
 PDF statistics:
  256 PDF objects out of 1000 (max. 8388607)
  217 compressed objects within 3 object streams

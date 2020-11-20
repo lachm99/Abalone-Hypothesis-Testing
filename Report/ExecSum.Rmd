@@ -299,7 +299,7 @@ We must state and justify our assumptions - for both models - to validate any in
 
 # Results 
 
-Since the models constructed using the forward and backward approach share the same adjusted $R^2$, the RMSE and MAE were computed for each in order to determine and justify the better model. Graphs are shown below.
+Since the models constructed using the forward and backward approach share the same adjusted $R^2$, the Residual Mean Square Error (RMSE) and Mean Absolute Error (MAE) were computed for each in order to determine and justify the better model. Graphs are shown below.
 
 ```{r, warning = FALSE}
 set.seed(1)
@@ -336,7 +336,7 @@ plot2 = ggplot(results, metric = "MAE") + labs(y = "MAE")+ theme(text=element_te
 gridExtra::grid.arrange(plot1, plot2, ncol=2)
 ```
 
-It is evident that the backward model is the better model, as it has a lower Residual Mean Square Error and Mean Absolute Error. 
+It is evident that the backward model is the better model, as it has a lower RMSE and MAE. 
 It is worth noting that the p-values for all the original variables are statistically significant, excepting one of the sexual maturity factors produced from the dummy coding contrast matrix. The p-value for `sex_f` was consistent with the null hypothesis that the __gender__ of the abalone is immaterial, while `sex_i` was significant, indicating that the sexual __maturity__ of the abalone was meaningful. \par
 It must be conceded that there is apparent multicollinearity within the dataset _(Appendix 4)_; which may reduce the precision of the estimate coefficients and lessen the statistical power of the model. This multicollinearity is to be expected. Living organisms tend to grow physically as they age, with a rate that decreases over time. Naturally, our measured values display that trend.\par 
   

@@ -240,21 +240,20 @@ validate any inferences made in our results.
 \section{Results}\label{results}}
 
 Since the models constructed using the forward and backward approach
-share the same adjusted \(R^2\), the RMSE and MAE were computed for each
-in order to determine and justify the better model. Graphs are shown
-below.
+share the same adjusted \(R^2\), the Residual Mean Square Error (RMSE)
+and Mean Absolute Error (MAE) were computed for each in order to
+determine and justify the better model. Graphs are shown below.
 
 \begin{center}\includegraphics{ExecSum_files/figure-latex/unnamed-chunk-8-1} \end{center}
 
 It is evident that the backward model is the better model, as it has a
-lower Residual Mean Square Error and Mean Absolute Error. It is worth
-noting that the p-values for all the original variables are
-statistically significant, excepting one of the sexual maturity factors
-produced from the dummy coding contrast matrix. The p-value for
-\texttt{sex\_f} was consistent with the null hypothesis that the
-\textbf{gender} of the abalone is immaterial, while \texttt{sex\_i} was
-significant, indicating that the sexual \textbf{maturity} of the abalone
-was meaningful.
+lower RMSE and MAE. It is worth noting that the p-values for all the
+original variables are statistically significant, excepting one of the
+sexual maturity factors produced from the dummy coding contrast matrix.
+The p-value for \texttt{sex\_f} was consistent with the null hypothesis
+that the \textbf{gender} of the abalone is immaterial, while
+\texttt{sex\_i} was significant, indicating that the sexual
+\textbf{maturity} of the abalone was meaningful.
 
 \par
 
